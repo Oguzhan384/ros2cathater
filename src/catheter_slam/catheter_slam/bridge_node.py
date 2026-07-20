@@ -1,3 +1,5 @@
+
+
 #!/usr/bin/env python3
 
 import rclpy
@@ -35,8 +37,8 @@ class CatheterBridge(Node):
 
         # ── CSV path ─────────────────────────────────────────────
         self.csv_path = os.path.expanduser(
-            '/home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001/ros2_ws/src/catheter_slam/data/data_4.csv'
-            )
+            '~/ros2_ws/src/catheter_slam/data/154530.csv'
+        )
 
         # ── Voltage/Vpp → radius calibration ─────────────────────
         # Voltage zaten Vpp kabul ediliyor.
@@ -62,10 +64,10 @@ class CatheterBridge(Node):
 
         # Sadece RViz görselleştirmesi için x eksenini büyütür.
         # Analizde x hâlâ gerçek mm/metre olarak kullanılır.
-        self.visual_x_scale = 1000.0
+        self.visual_x_scale = 10.0
 
         # Yayınlama periyodu
-        self.publish_period = 2.0   # 20 Hz
+        self.publish_period = 0.05   # 20 Hz
 
         # Renk değişimi çap/kalınlık için
         # 2 cm = 0.02 m
@@ -80,8 +82,6 @@ class CatheterBridge(Node):
         10
         )
         self.all_points = []
-        self.activeMarkers = []
-        self.lastXvisibility = -999.0
     # ─────────────────────────────────────────────────────────────
     # TF
     # ─────────────────────────────────────────────────────────────
@@ -232,7 +232,7 @@ class CatheterBridge(Node):
         df['x'] = self._convert_x_to_meters(df['x'].to_numpy())
 
         # x'e göre sırala
-        # df = df.sort_values('x').reset_index(drop=True)
+        df = df.sort_values('x').reset_index(drop=True)
 
         x_old = df['x'].to_numpy(dtype=float)
         v_old = df['voltage'].to_numpy(dtype=float)
@@ -610,54 +610,11 @@ class CatheterBridge(Node):
         for idx, row in df.iterrows():
             now = self.get_clock().now().to_msg()
 
-            
-
             x_real = float(row['x'])                  # gerçek x, metre cinsinden
             x_vis  = x_real * self.visual_x_scale     # RViz'de çizilecek x
 
             v = float(row['voltage'])                 # hazır Vpp
             r = self._voltage_to_radius(v)
-
-            # --- GERİ HAREKET KONTROLÜ VE SİLME MANTIĞI ---
-            if x_vis < self.last_x_vis:
-                delete_ma = MarkerArray()
-                # Mevcut markerlardan, şu anki konumumuzdan ileride olanları bul
-                ids_to_remove = [m_id for m_id, m_pos in self.active_markers.items() if m_pos > x_vis]
-                
-                for m_id in ids_to_remove:
-                    del_m = Marker()
-                    del_m.header.frame_id = 'odom'
-                    del_m.ns = 'vessel'
-                    del_m.id = m_id
-                    del_m.action = Marker.DELETE # Silme emri
-                    delete_ma.markers.append(del_m)
-                    # Takip listesinden de sil
-                    del self.active_markers[m_id]
-
-                if delete_ma.markers:
-                    self.marker_pub.publish(delete_ma)
-                
-                # PointCloud (nokta bulutu) listesini de temizle
-                self.all_points = [p for p in self.all_points if p[0] <= x_vis]
-
-            # Marker oluştur ve takip listesine ekle
-            marker = self._make_cylinder_marker(idx, x_vis, r, v, now)
-            self.active_markers[idx] = x_vis # ID ve konumu kaydet
-        
-            # Yayını yap
-            ma = MarkerArray()
-            ma.markers.append(marker)
-            self.marker_pub.publish(ma)
-
-            self._publish_tf(x_vis, now)
-            self._publish_odom(x_vis, now)
-            self._publish_scan(r, x_vis, now)
-            self._publish_cloud(r, x_vis, now)
-
-            self.last_x_vis = x_vis # Son konumu güncelle
-            
-            # Loglama ve uyuma...
-            time.sleep(self.publish_period)
 
             diameter_cm = r * 200.0
             min_diameter_cm = self.r_min * 200.0
@@ -691,7 +648,6 @@ class CatheterBridge(Node):
             time.sleep(self.publish_period)
 
         self.get_logger().info('✓ Tüm veri yayınlandı.')
-        rclpy.spin(self)
 
 
 def main(args=None):
@@ -710,3 +666,4 @@ def main(args=None):
 
 if __name__ == '__main__':
     main()
+
