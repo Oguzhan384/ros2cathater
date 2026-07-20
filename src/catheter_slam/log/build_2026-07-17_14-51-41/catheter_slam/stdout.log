@@ -1,0 +1,35 @@
+running egg_info
+creating build/catheter_slam/catheter_slam.egg-info
+writing build/catheter_slam/catheter_slam.egg-info/PKG-INFO
+writing dependency_links to build/catheter_slam/catheter_slam.egg-info/dependency_links.txt
+writing entry points to build/catheter_slam/catheter_slam.egg-info/entry_points.txt
+writing requirements to build/catheter_slam/catheter_slam.egg-info/requires.txt
+writing top-level names to build/catheter_slam/catheter_slam.egg-info/top_level.txt
+writing manifest file 'build/catheter_slam/catheter_slam.egg-info/SOURCES.txt'
+reading manifest file 'build/catheter_slam/catheter_slam.egg-info/SOURCES.txt'
+writing manifest file 'build/catheter_slam/catheter_slam.egg-info/SOURCES.txt'
+running build
+running build_py
+creating /home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001 (2)/ros2_ws/src/catheter_slam/build/catheter_slam/build/lib/catheter_slam
+copying catheter_slam/bridge_node.py -> /home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001 (2)/ros2_ws/src/catheter_slam/build/catheter_slam/build/lib/catheter_slam
+copying catheter_slam/__init__.py -> /home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001 (2)/ros2_ws/src/catheter_slam/build/catheter_slam/build/lib/catheter_slam
+running install
+running install_lib
+creating /home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001 (2)/ros2_ws/src/catheter_slam/install/catheter_slam/lib/python3.12/site-packages/catheter_slam
+copying /home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001 (2)/ros2_ws/src/catheter_slam/build/catheter_slam/build/lib/catheter_slam/bridge_node.py -> /home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001 (2)/ros2_ws/src/catheter_slam/install/catheter_slam/lib/python3.12/site-packages/catheter_slam
+copying /home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001 (2)/ros2_ws/src/catheter_slam/build/catheter_slam/build/lib/catheter_slam/__init__.py -> /home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001 (2)/ros2_ws/src/catheter_slam/install/catheter_slam/lib/python3.12/site-packages/catheter_slam
+byte-compiling /home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001 (2)/ros2_ws/src/catheter_slam/install/catheter_slam/lib/python3.12/site-packages/catheter_slam/bridge_node.py to bridge_node.cpython-312.pyc
+byte-compiling /home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001 (2)/ros2_ws/src/catheter_slam/install/catheter_slam/lib/python3.12/site-packages/catheter_slam/__init__.py to __init__.cpython-312.pyc
+running install_data
+creating /home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001 (2)/ros2_ws/src/catheter_slam/install/catheter_slam/share/ament_index/resource_index/packages
+copying resource/catheter_slam -> /home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001 (2)/ros2_ws/src/catheter_slam/install/catheter_slam/share/ament_index/resource_index/packages
+copying package.xml -> /home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001 (2)/ros2_ws/src/catheter_slam/install/catheter_slam/share/catheter_slam
+creating /home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001 (2)/ros2_ws/src/catheter_slam/install/catheter_slam/share/catheter_slam/config
+copying config/slam_toolbox.yaml -> /home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001 (2)/ros2_ws/src/catheter_slam/install/catheter_slam/share/catheter_slam/config
+creating /home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001 (2)/ros2_ws/src/catheter_slam/install/catheter_slam/share/catheter_slam/launch
+copying launch/catheter_slam.launch.py -> /home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001 (2)/ros2_ws/src/catheter_slam/install/catheter_slam/share/catheter_slam/launch
+running install_egg_info
+Copying build/catheter_slam/catheter_slam.egg-info to /home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001 (2)/ros2_ws/src/catheter_slam/install/catheter_slam/lib/python3.12/site-packages/catheter_slam-0.0.1-py3.12.egg-info
+running install_scripts
+Installing catheter_bridge script to /home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001 (2)/ros2_ws/src/catheter_slam/install/catheter_slam/lib/catheter_slam
+writing list of installed files to '/home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001 (2)/ros2_ws/src/catheter_slam/build/catheter_slam/install.log'

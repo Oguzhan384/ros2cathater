@@ -1,0 +1,33 @@
+slam_toolbox:
+  ros__parameters:
+    # Temel ayarlar
+    odom_frame:  odom
+    map_frame:   map
+    base_frame:  base_link
+    scan_topic:  /scan
+    mode:        mapping
+
+    # Düz ileri giden kateter için gevşek eşik
+    minimum_travel_distance: 0.001   # 1mm'de güncelle
+    minimum_travel_heading:  0.001   # neredeyse hiç dönme olmayacak
+
+    # Harita çözünürlüğü — damar ince, küçük tut
+    resolution: 0.001                # 1mm/piksel
+
+    # Loop closure kapatma — tek yönlü gidişte gerekmez, kapat
+    do_loop_closing: false
+
+    # Solver
+    solver_plugin: solver_plugins::CeresSolver
+    ceres_linear_solver: SPARSE_NORMAL_CHOLESKY
+    ceres_preconditioner: SCHUR_JACOBI
+
+    # TF timeout — yavaş veri için artır
+    transform_timeout: 0.5
+    tf_buffer_duration: 30.0
+
+    # Scan matching
+    use_scan_matching: true
+    use_scan_barycenter: true
+    minimum_time_interval: 0.05
+

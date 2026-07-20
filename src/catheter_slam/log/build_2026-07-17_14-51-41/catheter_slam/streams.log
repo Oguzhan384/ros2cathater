@@ -1,0 +1,37 @@
+[0.736s] Invoking command in '/home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001 (2)/ros2_ws/src/catheter_slam': DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTHONPATH=/home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001 (2)/ros2_ws/src/catheter_slam/build/catheter_slam/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001 (2)/ros2_ws/src/catheter_slam/install/catheter_slam/lib/python3.12/site-packages: /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base build/catheter_slam build --build-base /home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001 (2)/ros2_ws/src/catheter_slam/build/catheter_slam/build install --record /home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001 (2)/ros2_ws/src/catheter_slam/build/catheter_slam/install.log --install-scripts $base/lib/catheter_slam --single-version-externally-managed install_data
+[0.990s] running egg_info
+[0.995s] creating build/catheter_slam/catheter_slam.egg-info
+[0.995s] writing build/catheter_slam/catheter_slam.egg-info/PKG-INFO
+[0.995s] writing dependency_links to build/catheter_slam/catheter_slam.egg-info/dependency_links.txt
+[0.996s] writing entry points to build/catheter_slam/catheter_slam.egg-info/entry_points.txt
+[0.996s] writing requirements to build/catheter_slam/catheter_slam.egg-info/requires.txt
+[0.996s] writing top-level names to build/catheter_slam/catheter_slam.egg-info/top_level.txt
+[0.996s] writing manifest file 'build/catheter_slam/catheter_slam.egg-info/SOURCES.txt'
+[1.012s] reading manifest file 'build/catheter_slam/catheter_slam.egg-info/SOURCES.txt'
+[1.013s] writing manifest file 'build/catheter_slam/catheter_slam.egg-info/SOURCES.txt'
+[1.013s] running build
+[1.013s] running build_py
+[1.013s] creating /home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001 (2)/ros2_ws/src/catheter_slam/build/catheter_slam/build/lib/catheter_slam
+[1.013s] copying catheter_slam/bridge_node.py -> /home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001 (2)/ros2_ws/src/catheter_slam/build/catheter_slam/build/lib/catheter_slam
+[1.013s] copying catheter_slam/__init__.py -> /home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001 (2)/ros2_ws/src/catheter_slam/build/catheter_slam/build/lib/catheter_slam
+[1.013s] running install
+[1.017s] running install_lib
+[1.025s] creating /home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001 (2)/ros2_ws/src/catheter_slam/install/catheter_slam/lib/python3.12/site-packages/catheter_slam
+[1.025s] copying /home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001 (2)/ros2_ws/src/catheter_slam/build/catheter_slam/build/lib/catheter_slam/bridge_node.py -> /home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001 (2)/ros2_ws/src/catheter_slam/install/catheter_slam/lib/python3.12/site-packages/catheter_slam
+[1.025s] copying /home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001 (2)/ros2_ws/src/catheter_slam/build/catheter_slam/build/lib/catheter_slam/__init__.py -> /home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001 (2)/ros2_ws/src/catheter_slam/install/catheter_slam/lib/python3.12/site-packages/catheter_slam
+[1.025s] byte-compiling /home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001 (2)/ros2_ws/src/catheter_slam/install/catheter_slam/lib/python3.12/site-packages/catheter_slam/bridge_node.py to bridge_node.cpython-312.pyc
+[1.028s] byte-compiling /home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001 (2)/ros2_ws/src/catheter_slam/install/catheter_slam/lib/python3.12/site-packages/catheter_slam/__init__.py to __init__.cpython-312.pyc
+[1.028s] running install_data
+[1.028s] creating /home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001 (2)/ros2_ws/src/catheter_slam/install/catheter_slam/share/ament_index/resource_index/packages
+[1.028s] copying resource/catheter_slam -> /home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001 (2)/ros2_ws/src/catheter_slam/install/catheter_slam/share/ament_index/resource_index/packages
+[1.028s] copying package.xml -> /home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001 (2)/ros2_ws/src/catheter_slam/install/catheter_slam/share/catheter_slam
+[1.028s] creating /home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001 (2)/ros2_ws/src/catheter_slam/install/catheter_slam/share/catheter_slam/config
+[1.028s] copying config/slam_toolbox.yaml -> /home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001 (2)/ros2_ws/src/catheter_slam/install/catheter_slam/share/catheter_slam/config
+[1.028s] creating /home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001 (2)/ros2_ws/src/catheter_slam/install/catheter_slam/share/catheter_slam/launch
+[1.028s] copying launch/catheter_slam.launch.py -> /home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001 (2)/ros2_ws/src/catheter_slam/install/catheter_slam/share/catheter_slam/launch
+[1.028s] running install_egg_info
+[1.036s] Copying build/catheter_slam/catheter_slam.egg-info to /home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001 (2)/ros2_ws/src/catheter_slam/install/catheter_slam/lib/python3.12/site-packages/catheter_slam-0.0.1-py3.12.egg-info
+[1.037s] running install_scripts
+[1.108s] Installing catheter_bridge script to /home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001 (2)/ros2_ws/src/catheter_slam/install/catheter_slam/lib/catheter_slam
+[1.108s] writing list of installed files to '/home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001 (2)/ros2_ws/src/catheter_slam/build/catheter_slam/install.log'
+[1.125s] Invoked command in '/home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001 (2)/ros2_ws/src/catheter_slam' returned '0': DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTHONPATH=/home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001 (2)/ros2_ws/src/catheter_slam/build/catheter_slam/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001 (2)/ros2_ws/src/catheter_slam/install/catheter_slam/lib/python3.12/site-packages: /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base build/catheter_slam build --build-base /home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001 (2)/ros2_ws/src/catheter_slam/build/catheter_slam/build install --record /home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001 (2)/ros2_ws/src/catheter_slam/build/catheter_slam/install.log --install-scripts $base/lib/catheter_slam --single-version-externally-managed install_data
