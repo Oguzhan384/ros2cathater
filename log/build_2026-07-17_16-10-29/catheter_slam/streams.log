@@ -1,0 +1,26 @@
+[1.056s] Invoking command in '/home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001/ros2_ws/build/catheter_slam': DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTHONPATH=/home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001/ros2_ws/build/catheter_slam/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001/ros2_ws/install/catheter_slam/lib/python3.12/site-packages: /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001/ros2_ws/build/catheter_slam/build --no-deps symlink_data
+[1.353s] running develop
+[1.403s] running egg_info
+[1.409s] creating catheter_slam.egg-info
+[1.409s] writing catheter_slam.egg-info/PKG-INFO
+[1.409s] writing dependency_links to catheter_slam.egg-info/dependency_links.txt
+[1.409s] writing entry points to catheter_slam.egg-info/entry_points.txt
+[1.409s] writing requirements to catheter_slam.egg-info/requires.txt
+[1.409s] writing top-level names to catheter_slam.egg-info/top_level.txt
+[1.409s] writing manifest file 'catheter_slam.egg-info/SOURCES.txt'
+[1.424s] reading manifest file 'catheter_slam.egg-info/SOURCES.txt'
+[1.424s] writing manifest file 'catheter_slam.egg-info/SOURCES.txt'
+[1.435s] running build_ext
+[1.435s] Creating /home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001/ros2_ws/install/catheter_slam/lib/python3.12/site-packages/catheter-slam.egg-link (link to .)
+[1.435s] Installing catheter_bridge script to /home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001/ros2_ws/install/catheter_slam/lib/catheter_slam
+[1.436s] 
+[1.436s] Installed /home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001/ros2_ws/build/catheter_slam
+[1.436s] running symlink_data
+[1.436s] creating /home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001/ros2_ws/install/catheter_slam/share/ament_index/resource_index/packages
+[1.436s] symbolically linking /home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001/ros2_ws/build/catheter_slam/resource/catheter_slam -> /home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001/ros2_ws/install/catheter_slam/share/ament_index/resource_index/packages
+[1.436s] symbolically linking /home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001/ros2_ws/build/catheter_slam/package.xml -> /home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001/ros2_ws/install/catheter_slam/share/catheter_slam
+[1.436s] creating /home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001/ros2_ws/install/catheter_slam/share/catheter_slam/config
+[1.436s] symbolically linking /home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001/ros2_ws/build/catheter_slam/config/slam_toolbox.yaml -> /home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001/ros2_ws/install/catheter_slam/share/catheter_slam/config
+[1.436s] creating /home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001/ros2_ws/install/catheter_slam/share/catheter_slam/launch
+[1.436s] symbolically linking /home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001/ros2_ws/build/catheter_slam/launch/catheter_slam.launch.py -> /home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001/ros2_ws/install/catheter_slam/share/catheter_slam/launch
+[1.454s] Invoked command in '/home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001/ros2_ws/build/catheter_slam' returned '0': DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTHONPATH=/home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001/ros2_ws/build/catheter_slam/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001/ros2_ws/install/catheter_slam/lib/python3.12/site-packages: /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001/ros2_ws/build/catheter_slam/build --no-deps symlink_data

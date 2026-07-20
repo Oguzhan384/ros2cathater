@@ -1,0 +1,132 @@
+[0.173s] DEBUG:colcon:Command line arguments: ['/usr/bin/colcon', 'build', '--symlink-install', '--packages-select', 'catheter_slam', '--cmake-args', '-DPYTHON_EXECUTABLE=/usr/bin/python3.12']
+[0.174s] DEBUG:colcon:Parsed command line arguments: Namespace(log_base=None, log_level=None, verb_name='build', build_base='build', install_base='install', merge_install=False, symlink_install=True, test_result_base=None, continue_on_error=False, executor='parallel', parallel_workers=20, event_handlers=None, ignore_user_meta=False, metas=['./colcon.meta'], base_paths=['.'], packages_ignore=None, packages_ignore_regex=None, paths=None, packages_up_to=None, packages_up_to_regex=None, packages_above=None, packages_above_and_dependencies=None, packages_above_depth=None, packages_select_by_dep=None, packages_skip_by_dep=None, packages_skip_up_to=None, packages_select_build_failed=False, packages_skip_build_finished=False, packages_select_test_failures=False, packages_skip_test_passed=False, packages_select=['catheter_slam'], packages_skip=None, packages_select_regex=None, packages_skip_regex=None, packages_start=None, packages_end=None, allow_overriding=[], cmake_args=['-DPYTHON_EXECUTABLE=/usr/bin/python3.12'], cmake_target=None, cmake_target_skip_unavailable=False, cmake_clean_cache=False, cmake_clean_first=False, cmake_force_configure=False, ament_cmake_args=None, catkin_cmake_args=None, catkin_skip_building_tests=False, verb_parser=<colcon_defaults.argument_parser.defaults.DefaultArgumentsDecorator object at 0x7e19d4615220>, verb_extension=<colcon_core.verb.build.BuildVerb object at 0x7e19d479ce30>, main=<bound method BuildVerb.main of <colcon_core.verb.build.BuildVerb object at 0x7e19d479ce30>>)
+[0.288s] Level 1:colcon.colcon_core.package_discovery:discover_packages(colcon_meta) check parameters
+[0.288s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) check parameters
+[0.288s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) check parameters
+[0.288s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) check parameters
+[0.288s] Level 1:colcon.colcon_core.package_discovery:discover_packages(colcon_meta) discover
+[0.288s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) discover
+[0.288s] INFO:colcon.colcon_core.package_discovery:Crawling recursively for packages in '/home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001/ros2_ws'
+[0.288s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['ignore', 'ignore_ament_install']
+[0.288s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ignore'
+[0.288s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ignore_ament_install'
+[0.288s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['colcon_pkg']
+[0.288s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'colcon_pkg'
+[0.288s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['colcon_meta']
+[0.288s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'colcon_meta'
+[0.288s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['ros']
+[0.288s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ros'
+[0.349s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['cmake', 'python']
+[0.349s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'cmake'
+[0.349s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'python'
+[0.349s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['python_setup_py']
+[0.349s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'python_setup_py'
+[0.349s] Level 1:colcon.colcon_core.package_identification:_identify(build) by extensions ['ignore', 'ignore_ament_install']
+[0.349s] Level 1:colcon.colcon_core.package_identification:_identify(build) by extension 'ignore'
+[0.349s] Level 1:colcon.colcon_core.package_identification:_identify(build) ignored
+[0.349s] Level 1:colcon.colcon_core.package_identification:_identify(install) by extensions ['ignore', 'ignore_ament_install']
+[0.349s] Level 1:colcon.colcon_core.package_identification:_identify(install) by extension 'ignore'
+[0.349s] Level 1:colcon.colcon_core.package_identification:_identify(install) ignored
+[0.349s] Level 1:colcon.colcon_core.package_identification:_identify(log) by extensions ['ignore', 'ignore_ament_install']
+[0.349s] Level 1:colcon.colcon_core.package_identification:_identify(log) by extension 'ignore'
+[0.350s] Level 1:colcon.colcon_core.package_identification:_identify(log) ignored
+[0.350s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['ignore', 'ignore_ament_install']
+[0.350s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'ignore'
+[0.350s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'ignore_ament_install'
+[0.350s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['colcon_pkg']
+[0.350s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'colcon_pkg'
+[0.350s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['colcon_meta']
+[0.350s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'colcon_meta'
+[0.350s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['ros']
+[0.350s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'ros'
+[0.350s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['cmake', 'python']
+[0.350s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'cmake'
+[0.350s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'python'
+[0.350s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['python_setup_py']
+[0.350s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'python_setup_py'
+[0.350s] Level 1:colcon.colcon_core.package_identification:_identify(src/catheter_slam) by extensions ['ignore', 'ignore_ament_install']
+[0.350s] Level 1:colcon.colcon_core.package_identification:_identify(src/catheter_slam) by extension 'ignore'
+[0.350s] Level 1:colcon.colcon_core.package_identification:_identify(src/catheter_slam) by extension 'ignore_ament_install'
+[0.350s] Level 1:colcon.colcon_core.package_identification:_identify(src/catheter_slam) by extensions ['colcon_pkg']
+[0.350s] Level 1:colcon.colcon_core.package_identification:_identify(src/catheter_slam) by extension 'colcon_pkg'
+[0.350s] Level 1:colcon.colcon_core.package_identification:_identify(src/catheter_slam) by extensions ['colcon_meta']
+[0.350s] Level 1:colcon.colcon_core.package_identification:_identify(src/catheter_slam) by extension 'colcon_meta'
+[0.350s] Level 1:colcon.colcon_core.package_identification:_identify(src/catheter_slam) by extensions ['ros']
+[0.350s] Level 1:colcon.colcon_core.package_identification:_identify(src/catheter_slam) by extension 'ros'
+[0.352s] DEBUG:colcon.colcon_core.package_identification:Package 'src/catheter_slam' with type 'ros.ament_python' and name 'catheter_slam'
+[0.352s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) using defaults
+[0.352s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) discover
+[0.352s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) using defaults
+[0.352s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) discover
+[0.352s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) using defaults
+[0.381s] Level 1:colcon.colcon_core.package_discovery:discover_packages(prefix_path) check parameters
+[0.381s] Level 1:colcon.colcon_core.package_discovery:discover_packages(prefix_path) discover
+[0.383s] Level 1:colcon.colcon_core.package_discovery:discover_packages(prefix_path) using defaults
+[0.384s] Level 5:colcon.colcon_core.verb:set package 'catheter_slam' build argument 'cmake_args' from command line to '['-DPYTHON_EXECUTABLE=/usr/bin/python3.12']'
+[0.384s] Level 5:colcon.colcon_core.verb:set package 'catheter_slam' build argument 'cmake_target' from command line to 'None'
+[0.384s] Level 5:colcon.colcon_core.verb:set package 'catheter_slam' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[0.384s] Level 5:colcon.colcon_core.verb:set package 'catheter_slam' build argument 'cmake_clean_cache' from command line to 'False'
+[0.384s] Level 5:colcon.colcon_core.verb:set package 'catheter_slam' build argument 'cmake_clean_first' from command line to 'False'
+[0.384s] Level 5:colcon.colcon_core.verb:set package 'catheter_slam' build argument 'cmake_force_configure' from command line to 'False'
+[0.384s] Level 5:colcon.colcon_core.verb:set package 'catheter_slam' build argument 'ament_cmake_args' from command line to 'None'
+[0.384s] Level 5:colcon.colcon_core.verb:set package 'catheter_slam' build argument 'catkin_cmake_args' from command line to 'None'
+[0.384s] Level 5:colcon.colcon_core.verb:set package 'catheter_slam' build argument 'catkin_skip_building_tests' from command line to 'False'
+[0.384s] DEBUG:colcon.colcon_core.verb:Building package 'catheter_slam' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001/ros2_ws/build/catheter_slam', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': ['-DPYTHON_EXECUTABLE=/usr/bin/python3.12'], 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001/ros2_ws/install/catheter_slam', 'merge_install': False, 'path': '/home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001/ros2_ws/src/catheter_slam', 'symlink_install': True, 'test_result_base': None}
+[0.384s] INFO:colcon.colcon_core.executor:Executing jobs using 'parallel' executor
+[0.385s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:run_until_complete
+[0.385s] INFO:colcon.colcon_ros.task.ament_python.build:Building ROS package in '/home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001/ros2_ws/src/catheter_slam' with build type 'ament_python'
+[0.385s] Level 1:colcon.colcon_core.shell:create_environment_hook('catheter_slam', 'ament_prefix_path')
+[0.389s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_core.shell.bat': Not used on non-Windows systems
+[0.390s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001/ros2_ws/install/catheter_slam/share/catheter_slam/hook/ament_prefix_path.ps1'
+[0.391s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001/ros2_ws/install/catheter_slam/share/catheter_slam/hook/ament_prefix_path.dsv'
+[0.391s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001/ros2_ws/install/catheter_slam/share/catheter_slam/hook/ament_prefix_path.sh'
+[0.392s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[0.392s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[0.625s] INFO:colcon.colcon_core.task.python.build:Building Python package in '/home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001/ros2_ws/src/catheter_slam'
+[0.625s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[0.625s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[1.151s] DEBUG:colcon.colcon_core.task.python.build:Available setuptools commands: build_ext, install_headers, install_lib, install_egg_info, init_catalog, bdist, install_data, bdist_egg, setopt, build, easy_install, rotate, install_scripts, develop, bdist_dumb, bdist_wheel, saveopts, build_scripts, update_catalog, sdist, egg_info, editable_wheel, alias, bdist_rpm, build_clib, clean, compile_catalog, check, dist_info, extract_messages, install, build_py, symlink_data
+[1.439s] DEBUG:colcon.colcon_core.task.python.build:Available setuptools 'develop' options: --optimize, --help, --find-links, --version, --force-installation-into-system-dir, --record, --quiet, --upgrade, --install-layout, --verbose, --exclude-scripts, --zip-ok, --script-dir, --egg-path, --editable, --build-directory, --no-deps, --no-find-links, --no-user-cfg, --always-unzip, --prefix, --allow-hosts, --index-url, --dry-run, --always-copy, --user, --install-dir, --multi-version, --local-snapshots-ok, --uninstall, --site-dirs
+[1.441s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001/ros2_ws/build/catheter_slam': DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTHONPATH=/home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001/ros2_ws/build/catheter_slam/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001/ros2_ws/install/catheter_slam/lib/python3.12/site-packages: /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001/ros2_ws/build/catheter_slam/build --no-deps symlink_data
+[1.839s] Level 1:colcon.colcon_core.shell:create_environment_hook('catheter_slam', 'pythonpath_develop')
+[1.839s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001/ros2_ws/build/catheter_slam/share/catheter_slam/hook/pythonpath_develop.ps1'
+[1.840s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001/ros2_ws/build/catheter_slam' returned '0': DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTHONPATH=/home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001/ros2_ws/build/catheter_slam/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001/ros2_ws/install/catheter_slam/lib/python3.12/site-packages: /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001/ros2_ws/build/catheter_slam/build --no-deps symlink_data
+[1.840s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001/ros2_ws/build/catheter_slam/share/catheter_slam/hook/pythonpath_develop.dsv'
+[1.841s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001/ros2_ws/build/catheter_slam/share/catheter_slam/hook/pythonpath_develop.sh'
+[1.846s] Level 1:colcon.colcon_core.environment:checking '/home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001/ros2_ws/install/catheter_slam' for CMake module files
+[1.846s] Level 1:colcon.colcon_core.environment:checking '/home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001/ros2_ws/install/catheter_slam' for CMake config files
+[1.847s] Level 1:colcon.colcon_core.environment:checking '/home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001/ros2_ws/install/catheter_slam/lib'
+[1.847s] Level 1:colcon.colcon_core.environment:checking '/home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001/ros2_ws/install/catheter_slam/bin'
+[1.847s] Level 1:colcon.colcon_core.environment:checking '/home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001/ros2_ws/install/catheter_slam/lib/pkgconfig/catheter_slam.pc'
+[1.847s] Level 1:colcon.colcon_core.environment:checking '/home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001/ros2_ws/install/catheter_slam/lib/python3.12/site-packages'
+[1.847s] Level 1:colcon.colcon_core.shell:create_environment_hook('catheter_slam', 'pythonpath')
+[1.847s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001/ros2_ws/install/catheter_slam/share/catheter_slam/hook/pythonpath.ps1'
+[1.848s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001/ros2_ws/install/catheter_slam/share/catheter_slam/hook/pythonpath.dsv'
+[1.848s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001/ros2_ws/install/catheter_slam/share/catheter_slam/hook/pythonpath.sh'
+[1.848s] Level 1:colcon.colcon_core.environment:checking '/home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001/ros2_ws/install/catheter_slam/bin'
+[1.848s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(catheter_slam)
+[1.849s] INFO:colcon.colcon_core.shell:Creating package script '/home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001/ros2_ws/install/catheter_slam/share/catheter_slam/package.ps1'
+[1.850s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001/ros2_ws/install/catheter_slam/share/catheter_slam/package.dsv'
+[1.850s] INFO:colcon.colcon_core.shell:Creating package script '/home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001/ros2_ws/install/catheter_slam/share/catheter_slam/package.sh'
+[1.851s] INFO:colcon.colcon_core.shell:Creating package script '/home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001/ros2_ws/install/catheter_slam/share/catheter_slam/package.bash'
+[1.851s] INFO:colcon.colcon_core.shell:Creating package script '/home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001/ros2_ws/install/catheter_slam/share/catheter_slam/package.zsh'
+[1.852s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001/ros2_ws/install/catheter_slam/share/colcon-core/packages/catheter_slam)
+[1.852s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:closing loop
+[1.852s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:loop closed
+[1.852s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:run_until_complete finished with '0'
+[1.852s] DEBUG:colcon.colcon_core.event_reactor:joining thread
+[1.861s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.notify2': 'notify2' not found
+[1.861s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.terminal_notifier': Not used on non-Darwin systems
+[1.861s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.win32': Not used on non-Windows systems
+[1.861s] INFO:colcon.colcon_notification.desktop_notification:Sending desktop notification using 'notify_send'
+[1.890s] DEBUG:colcon.colcon_core.event_reactor:joined thread
+[1.890s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001/ros2_ws/install/local_setup.ps1'
+[1.891s] INFO:colcon.colcon_core.shell:Creating prefix util module '/home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001/ros2_ws/install/_local_setup_util_ps1.py'
+[1.893s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001/ros2_ws/install/setup.ps1'
+[1.894s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001/ros2_ws/install/local_setup.sh'
+[1.895s] INFO:colcon.colcon_core.shell:Creating prefix util module '/home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001/ros2_ws/install/_local_setup_util_sh.py'
+[1.896s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001/ros2_ws/install/setup.sh'
+[1.897s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001/ros2_ws/install/local_setup.bash'
+[1.899s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001/ros2_ws/install/setup.bash'
+[1.900s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001/ros2_ws/install/local_setup.zsh'
+[1.901s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001/ros2_ws/install/setup.zsh'
