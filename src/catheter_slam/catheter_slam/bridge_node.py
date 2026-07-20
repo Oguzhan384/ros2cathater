@@ -35,7 +35,7 @@ class CatheterBridge(Node):
 
         # ── CSV path ─────────────────────────────────────────────
         self.csv_path = os.path.expanduser(
-            '/home/oguzhan/Desktop/ros2_ws-20260717T101447Z-1-001/ros2_ws/src/catheter_slam/data/data_4.csv'
+            '/home/oguzhan/Desktop/ros2Cathater/ros2cathater/src/catheter_slam/data/data_3.csv'
             )
 
         # ── Voltage/Vpp → radius calibration ─────────────────────
@@ -62,10 +62,10 @@ class CatheterBridge(Node):
 
         # Sadece RViz görselleştirmesi için x eksenini büyütür.
         # Analizde x hâlâ gerçek mm/metre olarak kullanılır.
-        self.visual_x_scale = 1000.0
+        self.visual_x_scale = 10.0
 
         # Yayınlama periyodu
-        self.publish_period = 2.0   # 20 Hz
+        self.publish_period = 0.01   # 20 Hz
 
         # Renk değişimi çap/kalınlık için
         # 2 cm = 0.02 m
@@ -80,8 +80,8 @@ class CatheterBridge(Node):
         10
         )
         self.all_points = []
-        self.activeMarkers = []
-        self.lastXvisibility = -999.0
+        self.active_markers = {}
+        self.last_x_vis = -999.0
     # ─────────────────────────────────────────────────────────────
     # TF
     # ─────────────────────────────────────────────────────────────
@@ -232,7 +232,7 @@ class CatheterBridge(Node):
         df['x'] = self._convert_x_to_meters(df['x'].to_numpy())
 
         # x'e göre sırala
-        # df = df.sort_values('x').reset_index(drop=True)
+        df = df.sort_values('x').reset_index(drop=True)
 
         x_old = df['x'].to_numpy(dtype=float)
         v_old = df['voltage'].to_numpy(dtype=float)
@@ -592,105 +592,104 @@ class CatheterBridge(Node):
         if df is None:
             return
 
-        time.sleep(1.0)
+        while rclpy.ok():
 
-        self._clear_markers()
-
-        time.sleep(0.2)
-
-        marker_array = MarkerArray()
-
-        if self.show_legend:
-            now = self.get_clock().now().to_msg()
-            self._add_color_legend(marker_array, now)
-            self.marker_pub.publish(marker_array)
-
-        self.get_logger().info('Yayın başlıyor...')
-
-        for idx, row in df.iterrows():
-            now = self.get_clock().now().to_msg()
-
+            self._clear_markers()             # RViz'deki tüm markerları temizle
+            self.all_points = []              # Nokta bulutu listesini sıfırla
+            self.active_markers = {}          # Takip sözlüğünü sıfırla
+            self.last_x_real = -999.0         # Geri hareket referansını sıfırla
             
+            time.sleep(1.0)
 
-            x_real = float(row['x'])                  # gerçek x, metre cinsinden
-            x_vis  = x_real * self.visual_x_scale     # RViz'de çizilecek x
+            self._clear_markers()
 
-            v = float(row['voltage'])                 # hazır Vpp
-            r = self._voltage_to_radius(v)
+            time.sleep(0.2)
 
-            # --- GERİ HAREKET KONTROLÜ VE SİLME MANTIĞI ---
-            if x_vis < self.last_x_vis:
-                delete_ma = MarkerArray()
-                # Mevcut markerlardan, şu anki konumumuzdan ileride olanları bul
-                ids_to_remove = [m_id for m_id, m_pos in self.active_markers.items() if m_pos > x_vis]
+            marker_array = MarkerArray()
+
+            if self.show_legend:
+                now = self.get_clock().now().to_msg()
+                self._add_color_legend(marker_array, now)
+                self.marker_pub.publish(marker_array)
+
+            self.get_logger().info('Yayın başlıyor...')
+
+            for idx, row in df.iterrows():
+                now = self.get_clock().now().to_msg()
+
                 
-                for m_id in ids_to_remove:
-                    del_m = Marker()
-                    del_m.header.frame_id = 'odom'
-                    del_m.ns = 'vessel'
-                    del_m.id = m_id
-                    del_m.action = Marker.DELETE # Silme emri
-                    delete_ma.markers.append(del_m)
-                    # Takip listesinden de sil
-                    del self.active_markers[m_id]
 
-                if delete_ma.markers:
-                    self.marker_pub.publish(delete_ma)
-                
-                # PointCloud (nokta bulutu) listesini de temizle
-                self.all_points = [p for p in self.all_points if p[0] <= x_vis]
+                x_real = float(row['x'])                  # gerçek x, metre cinsinden
+                x_vis  = x_real * self.visual_x_scale     # RViz'de çizilecek x
 
-            # Marker oluştur ve takip listesine ekle
-            marker = self._make_cylinder_marker(idx, x_vis, r, v, now)
-            self.active_markers[idx] = x_vis # ID ve konumu kaydet
-        
-            # Yayını yap
-            ma = MarkerArray()
-            ma.markers.append(marker)
-            self.marker_pub.publish(ma)
+                v = float(row['voltage'])                 # hazır Vpp
+                r = self._voltage_to_radius(v)
 
-            self._publish_tf(x_vis, now)
-            self._publish_odom(x_vis, now)
-            self._publish_scan(r, x_vis, now)
-            self._publish_cloud(r, x_vis, now)
+                # --- GERİ HAREKET KONTROLÜ VE SİLME MANTIĞI ---
+                if x_vis < self.last_x_vis:
+                    delete_ma = MarkerArray()
+                    # Mevcut markerlardan, şu anki konumumuzdan ileride olanları bul
+                    ids_to_remove = [m_id for m_id, m_pos in self.active_markers.items() if m_pos > x_vis]
+                    
+                    for m_id in ids_to_remove:
+                        del_m = Marker()
+                        del_m.header.frame_id = 'odom'
+                        del_m.ns = 'vessel'
+                        del_m.id = m_id
+                        del_m.action = Marker.DELETE # Silme emri
+                        delete_ma.markers.append(del_m)
+                        # Takip listesinden de sil
+                        del self.active_markers[m_id]
 
-            self.last_x_vis = x_vis # Son konumu güncelle
-            
-            # Loglama ve uyuma...
-            time.sleep(self.publish_period)
+                    if delete_ma.markers:
+                        self.marker_pub.publish(delete_ma)
+                    
+                    # PointCloud (nokta bulutu) listesini de temizle
+                    self.all_points = [p for p in self.all_points if p[0] <= x_vis]
 
-            diameter_cm = r * 200.0
-            min_diameter_cm = self.r_min * 200.0
-            step_cm = self.thickness_color_step * 100.0
+                # Marker oluştur ve takip listesine ekle
+                marker = self._make_cylinder_marker(idx, x_vis, r, v, now)
+                self.active_markers[idx] = x_vis # ID ve konumu kaydet
 
-            _, thickness_segment = self._get_thickness_color(r)
 
-            lower_cm = min_diameter_cm + thickness_segment * step_cm
-            upper_cm = lower_cm + step_cm
+                diameter_cm = r * 200.0
+                min_diameter_cm = self.r_min * 200.0
+                step_cm = self.thickness_color_step * 100.0
 
-            self._publish_tf(x_vis, now)
-            self._publish_odom(x_vis, now)
-            self._publish_scan(r, x_vis, now)
-            self._publish_cloud(r, x_vis, now)
+                _, thickness_segment = self._get_thickness_color(r)
 
-            marker = self._make_cylinder_marker(idx, x_vis, r, v, now)
-            marker_array.markers.append(marker)
-            self.marker_pub.publish(marker_array)
+                lower_cm = min_diameter_cm + thickness_segment * step_cm
+                upper_cm = lower_cm + step_cm
 
-            self.get_logger().info(
-                f'[{idx:04d}] '
-                f'x_real={x_real * 100:.2f}cm | '
-                f'x_vis={x_vis * 100:.2f}cm | '
-                f'Vpp={v:.3f}V | '
-                f'r={r * 100:.2f}cm | '
-                f'cap={diameter_cm:.2f}cm | '
-                f'renk_araligi={lower_cm:.1f}-{upper_cm:.1f}cm'
-            )
+                ma = MarkerArray()
+                ma.markers.append(marker)
+                self.marker_pub.publish(ma)
 
-            rclpy.spin_once(self, timeout_sec=0.001)
-            time.sleep(self.publish_period)
+                self._publish_tf(x_vis, now)
+                self._publish_odom(x_vis, now)
+                self._publish_scan(r, x_vis, now)
+                self._publish_cloud(r, x_vis, now)
 
-        self.get_logger().info('✓ Tüm veri yayınlandı.')
+                self.last_x_vis = x_vis # Son konumu güncelle
+
+                marker = self._make_cylinder_marker(idx, x_vis, r, v, now)
+                marker_array.markers.append(marker)
+                self.marker_pub.publish(marker_array)
+
+                self.get_logger().info(
+                    f'[{idx:04d}] '
+                    f'x_real={x_real * 100:.2f}cm | '
+                    f'x_vis={x_vis * 100:.2f}cm | '
+                    f'Vpp={v:.3f}V | '
+                    f'r={r * 100:.2f}cm | '
+                    f'cap={diameter_cm:.2f}cm | '
+                    f'renk_araligi={lower_cm:.1f}-{upper_cm:.1f}cm'
+                )
+
+                rclpy.spin_once(self, timeout_sec=0.001)
+                time.sleep(self.publish_period)
+
+        #self.get_logger().info('✓ Tüm veri yayınlandı.')
         rclpy.spin(self)
 
 
