@@ -35,7 +35,7 @@ class CatheterBridge(Node):
 
         # ── CSV path ─────────────────────────────────────────────
         self.csv_path = os.path.expanduser(
-            '/home/oguzhan/Desktop/ros2Cathater/ros2cathater/src/catheter_slam/data/data_3.csv'
+            '/home/oguzhan/Desktop/ros2Cathater/ros2cathater/src/catheter_slam/data/Deney3_Combined_Interpolated-Combined Data.csv'
             )
 
         # ── Voltage/Vpp → radius calibration ─────────────────────
@@ -198,83 +198,27 @@ class CatheterBridge(Node):
 
         raise ValueError("x_unit: 'auto', 'm', 'cm' veya 'mm' olmalı.")
 
-    def _load_and_interpolate_csv(self):
-        if not os.path.exists(self.csv_path):
-            self.get_logger().error(f'CSV bulunamadı: {self.csv_path}')
-            return None
+    def _load_csv_data(self):
+            if not os.path.exists(self.csv_path):
+                self.get_logger().error(f'CSV bulunamadı: {self.csv_path}')
+                return None
 
-        df = pd.read_csv(self.csv_path)
-        df.columns = df.columns.str.strip().str.lower()
+            df = pd.read_csv(self.csv_path)
+            # Kolon isimlerini temizle: 'Time (s)' -> 'time', 'Voltage' -> 'voltage'
+            df.columns = df.columns.str.strip().str.lower()
+            df.columns = [c.split(' ')[0] for c in df.columns]
 
-        if not {'x', 'voltage'}.issubset(df.columns):
-            self.get_logger().error(
-                f'CSV kolonları eksik. Bulunan kolonlar: {list(df.columns)}'
-            )
-            return None
-        #x verisi csv den
-        # Time kolonu varsa kullanılmıyor.
-        # Voltage zaten hazır Vpp kabul ediliyor.
-        df = df[['x', 'voltage']].copy()
+            # Sayısallaştır
+            for col in df.columns:
+                df[col] = pd.to_numeric(df[col], errors='coerce')
+            df = df.dropna().reset_index(drop=True)
 
-        df['x']       = pd.to_numeric(df['x'],       errors='coerce')
-        df['voltage'] = pd.to_numeric(df['voltage'], errors='coerce')
-        df = df.dropna()
+            # Eğer x değerleri mm ise (225 gibi), metreye çevir (0.225)
+            if df['x'].max() > 10.0:
+                df['x'] = df['x'] / 1000.0
 
-        if len(df) < 2:
-            self.get_logger().error('Geçerli veri sayısı yetersiz.')
-            return None
-
-        # Aynı x konumunda birden fazla Vpp varsa ortalamasını al.
-        # Burada max-min yapılmıyor.
-        df = df.groupby('x', as_index=False)['voltage'].mean()
-
-        # x'i metreye çevir
-        df['x'] = self._convert_x_to_meters(df['x'].to_numpy())
-
-        # x'e göre sırala
-        df = df.sort_values('x').reset_index(drop=True)
-
-        x_old = df['x'].to_numpy(dtype=float)
-        v_old = df['voltage'].to_numpy(dtype=float)
-
-        if len(df) < 2:
-            self.get_logger().error('Geçerli x noktası sayısı yetersiz.')
-            return None
-
-        # Datadaki gerçek Vpp min/max değerlerini bul
-        if not self._update_voltage_limits(v_old):
-            return None
-
-        if not self.use_interpolation:
+            self._update_voltage_limits(df['voltage'].to_numpy())
             return df
-
-        x_min = float(np.min(x_old))
-        x_max = float(np.max(x_old))
-
-        x_new = np.arange(
-            x_min,
-            x_max + self.interp_dx * 0.5,
-            self.interp_dx
-        )
-
-        if len(x_new) == 0:
-            self.get_logger().error('Interpolation için x_new boş oluştu.')
-            return None
-
-        if x_new[-1] < x_max:
-            x_new = np.append(x_new, x_max)
-
-        # x boyunca Vpp interpolation
-        v_new = np.interp(x_new, x_old, v_old)
-
-        self.get_logger().info(
-            f'{len(df)} ham x noktası → {len(x_new)} interpole nokta. '
-            f'x_real: {x_min:.4f} m → {x_max:.4f} m | '
-            f'x_visual_scale={self.visual_x_scale:.1f}'
-        )
-
-        return pd.DataFrame({'x': x_new, 'voltage': v_new})
-
     # ─────────────────────────────────────────────────────────────
     # Scan
     # ─────────────────────────────────────────────────────────────
@@ -527,171 +471,227 @@ class CatheterBridge(Node):
         odom.pose.covariance[35] = 1e-3
 
         self.odom_pub.publish(odom)
-    def _publish_cloud(self, r, x_vis, now):
 
-        num_points = 360
+    def _publish_cloud(self, now):
+            if not self.all_points: return
+            
+            # Sadece son 5000 noktayı göster (Opsiyonel: Eğer CSV çok büyükse kasmayı önler)
+            # points_to_send = self.all_points[-5000:] 
+            points_to_send = self.all_points
 
-        # Bu kesitin noktalarını üret
-        for i in range(num_points):
+            msg = PointCloud2()
+            msg.header.stamp = now
+            msg.header.frame_id = 'odom'
+            msg.height = 1
+            msg.width = len(points_to_send)
+            msg.point_step = 12
+            msg.row_step = 12 * len(points_to_send)
+            msg.is_dense = True
+            msg.fields = [
+                PointField(name='x', offset=0, datatype=PointField.FLOAT32, count=1),
+                PointField(name='y', offset=4, datatype=PointField.FLOAT32, count=1),
+                PointField(name='z', offset=8, datatype=PointField.FLOAT32, count=1)
+            ]
+            msg.data = struct.pack('<' + 'fff' * len(points_to_send), 
+                                *[v for p in points_to_send for v in p])
+            self.cloud_pub.publish(msg)
 
-            theta = 2.0 * math.pi * i / num_points
-
-            y = r * math.cos(theta)
-            z = r * math.sin(theta)
-
-            # Yeni noktaları kalıcı listeye ekle
-            self.all_points.append((x_vis, y, z))
-
-        msg = PointCloud2()
-
-        msg.header.stamp = now
-        msg.header.frame_id = 'odom'
-
-        msg.height = 1
-        msg.width = len(self.all_points)
-
-        msg.is_bigendian = False
-        msg.is_dense = True
-
-        msg.point_step = 12
-        msg.row_step = msg.point_step * msg.width
-
-        msg.fields = [
-            PointField(
-                name='x',
-                offset=0,
-                datatype=PointField.FLOAT32,
-                count=1
-            ),
-            PointField(
-                name='y',
-                offset=4,
-                datatype=PointField.FLOAT32,
-                count=1
-            ),
-            PointField(
-                name='z',
-                offset=8,
-                datatype=PointField.FLOAT32,
-                count=1
-            )
+    def _publish_legend(self):
+        """Renk skalası."""
+        legend_ma = MarkerArray()
+        now = self.get_clock().now().to_msg()
+        
+        # 15 renk
+        colors = [
+            (1.0, 0.0, 0.0), (1.0, 0.4, 0.0), (1.0, 1.0, 0.0), (0.5, 1.0, 0.0), (0.0, 1.0, 0.0),
+            (0.0, 1.0, 0.5), (0.0, 1.0, 1.0), (0.0, 0.5, 1.0), (0.0, 0.0, 1.0), (0.4, 0.0, 1.0),
+            (0.7, 0.0, 1.0), (1.0, 0.0, 1.0), (1.0, 0.0, 0.5), (0.6, 0.6, 0.6), (1.0, 1.0, 1.0)
         ]
 
-        msg.data = struct.pack(
-            '<' + 'fff' * len(self.all_points),
-            *[v for p in self.all_points for v in p]
-        )
+        # Başlangıç konumu
+        start_x = -0.1
+        start_y = -0.4
+        start_z = 0.1
+        spacing = 0.04  # Her satır arası boşluk
 
-        self.cloud_pub.publish(msg)
+        for i, col in enumerate(colors):
+            # r aralığı hesaplama (Her segment 2cm çap, yani 1cm yarıçap farkına denk gelir)
+            # Formül: r_start = r_min + (i * step / 2)
+            r_low = self.r_min + (i * self.thickness_color_step / 2.0)
+            r_high = r_low + (self.thickness_color_step / 2.0)
+
+            # 1. RENK KÜPÜ
+            cube = Marker()
+            cube.header.frame_id = "odom"
+            cube.header.stamp = now
+            cube.ns = "legend_cubes"
+            cube.id = 50000 + i
+            cube.type = Marker.CUBE
+            cube.action = Marker.ADD
+            cube.pose.position.x = start_x
+            cube.pose.position.y = start_y
+            cube.pose.position.z = start_z + (i * spacing)
+            cube.scale.x = 0.03
+            cube.scale.y = 0.03
+            cube.scale.z = 0.03
+            cube.color.r, cube.color.g, cube.color.b = col
+            cube.color.a = 1.0
+            legend_ma.markers.append(cube)
+
+            # 2. R DEĞERİ METNİ
+            text = Marker()
+            text.header.frame_id = "odom"
+            text.header.stamp = now
+            text.ns = "legend_text"
+            text.id = 60000 + i
+            text.type = Marker.TEXT_VIEW_FACING
+            text.action = Marker.ADD
+            text.pose.position.x = start_x + 0.05 # Küpün biraz sağında
+            text.pose.position.y = start_y
+            text.pose.position.z = start_z + (i * spacing)
+            text.scale.z = 0.025 # Yazı boyutu
+            text.text = f"r: {r_low:.3f}-{r_high:.3f}m"
+            text.color.r = 1.0
+            text.color.g = 1.0
+            text.color.b = 1.0
+            text.color.a = 1.0
+            legend_ma.markers.append(text)
+
+        self.marker_pub.publish(legend_ma)
+
+    def _delete_ahead_visuals(self, current_x_vis):
+            """Mevcut x konumunun ilerisindeki ve ucundaki her şeyi temizler."""
+            delete_ma = MarkerArray()
+            # Tolerans: 0.0005 (Görsel ölçekte 0.5mm). 
+            # Bu değer, tam sınırda kalan parçaların atlanmasını önler.
+            tolerans = 0.005 
+            
+            # Hafızadaki x konumu mevcut konumdan BÜYÜK veya EŞİT olan HER ŞEYİ bul
+            to_remove = [m_id for m_id, pos in self.active_markers.items() if pos > (current_x_vis - tolerans)]
+            
+            for m_id in to_remove:
+                m = Marker()
+                m.header.frame_id = 'odom'
+                m.ns = 'vessel'
+                m.id = int(m_id)
+                m.action = Marker.DELETE
+                delete_ma.markers.append(m)
+                
+                # Hafızadan (sözlükten) sildiğinden emin ol
+                if m_id in self.active_markers:
+                    del self.active_markers[m_id]
+                
+            if delete_ma.markers:
+                self.marker_pub.publish(delete_ma)
+                
+            # PointCloud'u temizle ve anında yayınla
+            self.all_points = [p for p in self.all_points if p[0] <= (current_x_vis + tolerans)]
+            self._publish_cloud(self.get_clock().now().to_msg())
+
+    def _dynamic_erase(self, current_x_vis):
+        """
+        Mevcut x konumundan ileride olan her şeyi görselden siler.
+        """
+        delete_marker_array = MarkerArray()
+        
+        # 1. Silinecek Marker ID'lerini bul (Mevcut konumun ilerisindekiler)
+        ids_to_remove = [m_id for m_id, pos in self.active_markers.items() if pos > current_x_vis]
+        
+        for m_id in ids_to_remove:
+            del_m = Marker()
+            del_m.header.frame_id = 'odom'
+            del_m.ns = 'vessel'
+            del_m.id = int(m_id)
+            del_m.action = Marker.DELETE  # RViz'e silme komutu gönder
+            delete_marker_array.markers.append(del_m)
+            
+            # Takip listemizden (sözlükten) çıkar
+            del self.active_markers[m_id]
+        
+        # RViz'e silme paketini gönder
+        if delete_marker_array.markers:
+            self.marker_pub.publish(delete_marker_array)
+            
+        # 2. PointCloud'u Temizle (Listeden sadece geride kalan noktaları tut)
+        self.all_points = [p for p in self.all_points if p[0] <= current_x_vis]
+
     # ─────────────────────────────────────────────────────────────
     # Main run
     # ─────────────────────────────────────────────────────────────
     def run(self):
-        df = self._load_and_interpolate_csv()
-
-        if df is None:
-            return
-
-        while rclpy.ok():
-
-            self._clear_markers()             # RViz'deki tüm markerları temizle
-            self.all_points = []              # Nokta bulutu listesini sıfırla
-            self.active_markers = {}          # Takip sözlüğünü sıfırla
-            self.last_x_real = -999.0         # Geri hareket referansını sıfırla
-            
-            time.sleep(1.0)
+            df = self._load_csv_data()
+            if df is None: return
 
             self._clear_markers()
+            self.all_points = []
+            self.active_markers = {}
 
-            time.sleep(0.2)
+            # Referanslar
+            first_x_vis = float(df['x'].iloc[0]) * self.visual_x_scale
+            self.last_x_vis = first_x_vis
+            self.last_draw_x = first_x_vis 
+            last_row_time = float(df['time'].iloc[0])
 
-            marker_array = MarkerArray()
+            # Üst üste binmeyi önlemek için minimum hareket eşiği
+            min_move_dist = 0.0005 * self.visual_x_scale
 
-            if self.show_legend:
-                now = self.get_clock().now().to_msg()
-                self._add_color_legend(marker_array, now)
-                self.marker_pub.publish(marker_array)
-
-            self.get_logger().info('Yayın başlıyor...')
+            self._publish_legend()
 
             for idx, row in df.iterrows():
+                if not rclpy.ok(): break
+
                 now = self.get_clock().now().to_msg()
+                t_val, x_val, v_val = float(row['time']), float(row['x']), float(row['voltage'])
+                x_vis = x_val * self.visual_x_scale
+                r = self._voltage_to_radius(v_val)
 
-                
-
-                x_real = float(row['x'])                  # gerçek x, metre cinsinden
-                x_vis  = x_real * self.visual_x_scale     # RViz'de çizilecek x
-
-                v = float(row['voltage'])                 # hazır Vpp
-                r = self._voltage_to_radius(v)
-
-                # --- GERİ HAREKET KONTROLÜ VE SİLME MANTIĞI ---
+                # --- 1. GERİ HAREKET (SİLME) ---
                 if x_vis < self.last_x_vis:
-                    delete_ma = MarkerArray()
-                    # Mevcut markerlardan, şu anki konumumuzdan ileride olanları bul
-                    ids_to_remove = [m_id for m_id, m_pos in self.active_markers.items() if m_pos > x_vis]
+                    self._delete_ahead_visuals(x_vis)
+                    # Geri gidince çizim referansını da o noktaya çek
+                    self.last_draw_x = x_vis
+                
+                # --- 2. İLERİ HAREKET (ÇİZME) ---
+                # Sadece yeterli mesafe gidildiyse yeni marker ekle
+                dist_since_last_draw = x_vis - self.last_draw_x
+                
+                if dist_since_last_draw >= min_move_dist:
+                    marker = self._make_cylinder_marker(idx, x_vis, r, v_val, now)
                     
-                    for m_id in ids_to_remove:
-                        del_m = Marker()
-                        del_m.header.frame_id = 'odom'
-                        del_m.ns = 'vessel'
-                        del_m.id = m_id
-                        del_m.action = Marker.DELETE # Silme emri
-                        delete_ma.markers.append(del_m)
-                        # Takip listesinden de sil
-                        del self.active_markers[m_id]
-
-                    if delete_ma.markers:
-                        self.marker_pub.publish(delete_ma)
+                    # Marker boyu, kat edilen mesafe kadar olsun
+                    marker.scale.z = dist_since_last_draw * 1.1 # Hafif pay bırak
                     
-                    # PointCloud (nokta bulutu) listesini de temizle
-                    self.all_points = [p for p in self.all_points if p[0] <= x_vis]
+                    self.active_markers[idx] = x_vis
+                    self.last_draw_x = x_vis # Çizilen son noktayı güncelle
+                    
+                    ma = MarkerArray()
+                    ma.markers.append(marker)
+                    self.marker_pub.publish(ma)
 
-                # Marker oluştur ve takip listesine ekle
-                marker = self._make_cylinder_marker(idx, x_vis, r, v, now)
-                self.active_markers[idx] = x_vis # ID ve konumu kaydet
+                    for i in range(12):
+                        theta = 2.0 * math.pi * i / 12
+                        self.all_points.append((float(x_vis), float(r * math.cos(theta)), float(r * math.sin(theta))))
 
-
-                diameter_cm = r * 200.0
-                min_diameter_cm = self.r_min * 200.0
-                step_cm = self.thickness_color_step * 100.0
-
-                _, thickness_segment = self._get_thickness_color(r)
-
-                lower_cm = min_diameter_cm + thickness_segment * step_cm
-                upper_cm = lower_cm + step_cm
-
-                ma = MarkerArray()
-                ma.markers.append(marker)
-                self.marker_pub.publish(ma)
-
+                # --- 3. YAYINLAR ---
                 self._publish_tf(x_vis, now)
                 self._publish_odom(x_vis, now)
-                self._publish_scan(r, x_vis, now)
-                self._publish_cloud(r, x_vis, now)
+                self._publish_cloud(now)
+                
+                print(f"Time: {t_val:7.3f}s | x: {x_val:8.4f} | Voltage: {v_val:6.4f}V | r: {r:6.4f}m", flush=True)
 
-                self.last_x_vis = x_vis # Son konumu güncelle
+                # --- 4. ZAMANLAMA ---
+                csv_diff = t_val - last_row_time
+                wait_time = max(csv_diff, self.publish_period)
+                if wait_time > 0.5: wait_time = self.publish_period
 
-                marker = self._make_cylinder_marker(idx, x_vis, r, v, now)
-                marker_array.markers.append(marker)
-                self.marker_pub.publish(marker_array)
+                rclpy.spin_once(self, timeout_sec=0)
+                time.sleep(wait_time)
+                
+                last_row_time = t_val
+                self.last_x_vis = x_vis
 
-                self.get_logger().info(
-                    f'[{idx:04d}] '
-                    f'x_real={x_real * 100:.2f}cm | '
-                    f'x_vis={x_vis * 100:.2f}cm | '
-                    f'Vpp={v:.3f}V | '
-                    f'r={r * 100:.2f}cm | '
-                    f'cap={diameter_cm:.2f}cm | '
-                    f'renk_araligi={lower_cm:.1f}-{upper_cm:.1f}cm'
-                )
-
-                rclpy.spin_once(self, timeout_sec=0.001)
-                time.sleep(self.publish_period)
-
-        #self.get_logger().info('✓ Tüm veri yayınlandı.')
-        rclpy.spin(self)
-
+            self.get_logger().info('Tamamlandı.')
+            rclpy.spin(self)
 
 def main(args=None):
     rclpy.init(args=args)
