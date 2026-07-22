@@ -633,7 +633,7 @@ class CatheterBridge(Node):
             last_row_time = float(df['time'].iloc[0])
 
             # Üst üste binmeyi önlemek için minimum hareket eşiği
-            min_move_dist = 0.0005 * self.visual_x_scale
+            min_move_dist = 0.000005 * self.visual_x_scale
 
             self._publish_legend()
 
