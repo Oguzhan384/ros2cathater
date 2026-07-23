@@ -26,7 +26,7 @@ class CatheterBridge(Node):
         # ── Publishers ───────────────────────────────────────────
         self.scan_pub   = self.create_publisher(LaserScan,   '/scan',           10)
         self.odom_pub   = self.create_publisher(Odometry,    '/odom',           10)
-        self.marker_pub = self.create_publisher(MarkerArray, '/vessel_markers', 10)
+        self.marker_pub = self.create_publisher(MarkerArray, '/vessel_markers', 100)
 
         # ── TF Broadcasters ─────────────────────────────────────
         self.tf_broadcaster        = TransformBroadcaster(self)
@@ -35,7 +35,7 @@ class CatheterBridge(Node):
 
         # ── CSV path ─────────────────────────────────────────────
         self.csv_path = os.path.expanduser(
-            '/home/oguzhan/Desktop/ros2Cathater/ros2cathater/src/catheter_slam/data/Deney3_Combined_Interpolated-Combined Data.csv'
+            '/home/oguzhan/Desktop/ros2Cathater/ros2cathater/src/catheter_slam/data/Deney2_Combined_Interpolated-Combined Data.csv'
             )
 
         # ── Voltage/Vpp → radius calibration ─────────────────────
@@ -65,7 +65,7 @@ class CatheterBridge(Node):
         self.visual_x_scale = 10.0
 
         # Yayınlama periyodu
-        self.publish_period = 0.01   # 20 Hz
+        self.publish_period = 0.05   # 20 Hz
 
         # Renk değişimi çap/kalınlık için
         # 2 cm = 0.02 m
@@ -560,14 +560,13 @@ class CatheterBridge(Node):
         self.marker_pub.publish(legend_ma)
 
     def _delete_ahead_visuals(self, current_x_vis):
-            """Mevcut x konumunun ilerisindeki ve ucundaki her şeyi temizler."""
             delete_ma = MarkerArray()
-            # Tolerans: 0.0005 (Görsel ölçekte 0.5mm). 
-            # Bu değer, tam sınırda kalan parçaların atlanmasını önler.
-            tolerans = 0.005 
+            # Toleransı çizim hassasiyetine göre ayarla (Örn: Çizim adımının yarısı kadar)
+            # Çok küçük epsilon (1e-9) ekleyerek floating point hatasını sıfırla
+            epsilon = 1e-9
             
-            # Hafızadaki x konumu mevcut konumdan BÜYÜK veya EŞİT olan HER ŞEYİ bul
-            to_remove = [m_id for m_id, pos in self.active_markers.items() if pos > (current_x_vis - tolerans)]
+            # Hafızadaki x konumu mevcut konumdan BÜYÜK veya ÇOK YAKIN olanları bul
+            to_remove = [m_id for m_id, pos in self.active_markers.items() if pos > (current_x_vis - epsilon)]
             
             for m_id in to_remove:
                 m = Marker()
@@ -576,17 +575,14 @@ class CatheterBridge(Node):
                 m.id = int(m_id)
                 m.action = Marker.DELETE
                 delete_ma.markers.append(m)
-                
-                # Hafızadan (sözlükten) sildiğinden emin ol
-                if m_id in self.active_markers:
-                    del self.active_markers[m_id]
+                del self.active_markers[m_id]
                 
             if delete_ma.markers:
+                # Mesajın kaybolmaması için hemen yayınla
                 self.marker_pub.publish(delete_ma)
                 
-            # PointCloud'u temizle ve anında yayınla
-            self.all_points = [p for p in self.all_points if p[0] <= (current_x_vis + tolerans)]
-            self._publish_cloud(self.get_clock().now().to_msg())
+            # PointCloud için filtrelemeyi daha sıkı yap
+            self.all_points = [p for p in self.all_points if p[0] <= (current_x_vis + epsilon)]
 
     def _dynamic_erase(self, current_x_vis):
         """
@@ -619,55 +615,68 @@ class CatheterBridge(Node):
     # Main run
     # ─────────────────────────────────────────────────────────────
     def run(self):
+            # 1. Veriyi yükle
             df = self._load_csv_data()
             if df is None: return
 
+            # 2. Başlangıç Temizliği ve Hafıza Sıfırlama
             self._clear_markers()
             self.all_points = []
-            self.active_markers = {}
+            self.active_markers = {} # {id: x_konumu}
 
-            # Referanslar
-            first_x_vis = float(df['x'].iloc[0]) * self.visual_x_scale
-            self.last_x_vis = first_x_vis
-            self.last_draw_x = first_x_vis 
-            last_row_time = float(df['time'].iloc[0])
+            # --- KRİTİK: İlk değerleri ayarla (Upuzun şekil oluşmaması için) ---
+            first_row = df.iloc[0]
+            first_x_val = float(first_row['x'])
+            # Başlangıç x_vis değerini de yuvarlayarak alıyoruz
+            self.last_x_vis = round(first_x_val * self.visual_x_scale, 5)
+            self.last_draw_x = self.last_x_vis 
+            last_row_time = float(first_row['time'])
 
-            # Üst üste binmeyi önlemek için minimum hareket eşiği
-            min_move_dist = 0.000005 * self.visual_x_scale
+            # --- Sabit Görseller ---
+            self._publish_legend() # Renk skalasını bas
+            
+            # Üst üste binmeyi önlemek için eşik (Örn: 0.5 mm)
+            min_move_dist = 0.0001 * self.visual_x_scale
 
-            self._publish_legend()
+            self.get_logger().info(f'Yayın başladı. Periyot: {self.publish_period}s')
 
             for idx, row in df.iterrows():
                 if not rclpy.ok(): break
 
                 now = self.get_clock().now().to_msg()
-                t_val, x_val, v_val = float(row['time']), float(row['x']), float(row['voltage'])
-                x_vis = x_val * self.visual_x_scale
+                t_val = float(row['time'])
+                x_val = float(row['x'])
+                v_val = float(row['voltage'])
+                
+                # --- YUVARLAMA (Floating Point Hatasını Çözen Kısım) ---
+                x_vis = round(x_val * self.visual_x_scale, 5)
                 r = self._voltage_to_radius(v_val)
 
                 # --- 1. GERİ HAREKET (SİLME) ---
                 if x_vis < self.last_x_vis:
+                    # current_x_vis artık yuvarlanmış olduğu için silme kusursuz çalışır
                     self._delete_ahead_visuals(x_vis)
-                    # Geri gidince çizim referansını da o noktaya çek
-                    self.last_draw_x = x_vis
+                    self.last_draw_x = x_vis # Silinen yerden sonra çizim referansını güncelle
                 
                 # --- 2. İLERİ HAREKET (ÇİZME) ---
-                # Sadece yeterli mesafe gidildiyse yeni marker ekle
                 dist_since_last_draw = x_vis - self.last_draw_x
                 
-                if dist_since_last_draw >= min_move_dist:
+                # Sadece bu index daha önce çizilmemişse VE yeterli mesafe katedilmişse çiz
+                if idx not in self.active_markers and dist_since_last_draw >= min_move_dist:
                     marker = self._make_cylinder_marker(idx, x_vis, r, v_val, now)
                     
-                    # Marker boyu, kat edilen mesafe kadar olsun
-                    marker.scale.z = dist_since_last_draw * 1.1 # Hafif pay bırak
+                    # Marker boyu (scale.z) iki nokta arasındaki mesafe kadar (Hafifçe 1.05 ile çarptık boşluk kalmasın)
+                    marker.scale.z = dist_since_last_draw * 1.05
                     
+                    # Yuvarlanmış x_vis değerini hafızaya al
                     self.active_markers[idx] = x_vis
-                    self.last_draw_x = x_vis # Çizilen son noktayı güncelle
+                    self.last_draw_x = x_vis
                     
                     ma = MarkerArray()
                     ma.markers.append(marker)
                     self.marker_pub.publish(ma)
 
+                    # PointCloud kesiti (12 nokta)
                     for i in range(12):
                         theta = 2.0 * math.pi * i / 12
                         self.all_points.append((float(x_vis), float(r * math.cos(theta)), float(r * math.sin(theta))))
@@ -676,21 +685,26 @@ class CatheterBridge(Node):
                 self._publish_tf(x_vis, now)
                 self._publish_odom(x_vis, now)
                 self._publish_cloud(now)
-                
+
+                # --- 4. TERMİNAL ÇIKTISI ---
+                # İstediğiniz Format: Time, x, Voltage, r
                 print(f"Time: {t_val:7.3f}s | x: {x_val:8.4f} | Voltage: {v_val:6.4f}V | r: {r:6.4f}m", flush=True)
 
-                # --- 4. ZAMANLAMA ---
-                csv_diff = t_val - last_row_time
-                wait_time = max(csv_diff, self.publish_period)
-                if wait_time > 0.5: wait_time = self.publish_period
+                # --- 5. ZAMANLAMA (Periyoda Bağlı) ---
+                csv_time_diff = t_val - last_row_time
+                # CSV hızı bizim periyodumuzdan hızlıysa periyoda zorla (Senkronizasyon için)
+                wait_time = max(csv_time_diff, self.publish_period)
+                if wait_time > 0.5: wait_time = self.publish_period # Atlamaları engelle
 
+                # ROS mesajlarını gönder ve bekle
                 rclpy.spin_once(self, timeout_sec=0)
                 time.sleep(wait_time)
                 
+                # Referansları güncelle
                 last_row_time = t_val
                 self.last_x_vis = x_vis
 
-            self.get_logger().info('Tamamlandı.')
+            self.get_logger().info('Bitti.')
             rclpy.spin(self)
 
 def main(args=None):
