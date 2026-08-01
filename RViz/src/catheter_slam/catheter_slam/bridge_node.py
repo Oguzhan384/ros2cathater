@@ -24,9 +24,9 @@ class CatheterBridge(Node):
         super().__init__('catheter_bridge')
 
         # ── Publishers ───────────────────────────────────────────
-        self.scan_pub   = self.create_publisher(LaserScan,   '/scan',           10)
-        self.odom_pub   = self.create_publisher(Odometry,    '/odom',           10)
-        self.marker_pub = self.create_publisher(MarkerArray, '/vessel_markers', 100)
+        self.scan_pub   = self.create_publisher(LaserScan,   '/scan',           100)
+        self.odom_pub   = self.create_publisher(Odometry,    '/odom',           100)
+        self.marker_pub = self.create_publisher(MarkerArray, '/vessel_markers', 10000)
 
         # ── TF Broadcasters ─────────────────────────────────────
         self.tf_broadcaster        = TransformBroadcaster(self)
