@@ -1,0 +1,1 @@
+Warning (10268): Verilog HDL information at adc_uart_daq.v(139): always construct contains both blocking and non-blocking assignments File: C:/adc_uart_daq/adc_uart_daq.v Line: 139

@@ -1,0 +1,101 @@
+------------------------------------------------------------
+Timing Analyzer Summary
+------------------------------------------------------------
+
+Type  : Slow 1100mV 85C Model Setup 'CLOCK_50'
+Slack : -43.775
+TNS   : -2384.892
+
+Type  : Slow 1100mV 85C Model Setup 'adc_spi_controller:adc_inst|clk_div[4]'
+Slack : -2.199
+TNS   : -59.427
+
+Type  : Slow 1100mV 85C Model Hold 'CLOCK_50'
+Slack : 0.369
+TNS   : 0.000
+
+Type  : Slow 1100mV 85C Model Hold 'adc_spi_controller:adc_inst|clk_div[4]'
+Slack : 0.660
+TNS   : 0.000
+
+Type  : Slow 1100mV 85C Model Minimum Pulse Width 'adc_spi_controller:adc_inst|clk_div[4]'
+Slack : -2.225
+TNS   : -42.440
+
+Type  : Slow 1100mV 85C Model Minimum Pulse Width 'CLOCK_50'
+Slack : -0.675
+TNS   : -100.826
+
+Type  : Slow 1100mV 0C Model Setup 'CLOCK_50'
+Slack : -43.511
+TNS   : -2366.667
+
+Type  : Slow 1100mV 0C Model Setup 'adc_spi_controller:adc_inst|clk_div[4]'
+Slack : -2.132
+TNS   : -55.698
+
+Type  : Slow 1100mV 0C Model Hold 'CLOCK_50'
+Slack : 0.370
+TNS   : 0.000
+
+Type  : Slow 1100mV 0C Model Hold 'adc_spi_controller:adc_inst|clk_div[4]'
+Slack : 0.656
+TNS   : 0.000
+
+Type  : Slow 1100mV 0C Model Minimum Pulse Width 'adc_spi_controller:adc_inst|clk_div[4]'
+Slack : -2.225
+TNS   : -41.957
+
+Type  : Slow 1100mV 0C Model Minimum Pulse Width 'CLOCK_50'
+Slack : -0.701
+TNS   : -92.646
+
+Type  : Fast 1100mV 85C Model Setup 'CLOCK_50'
+Slack : -25.842
+TNS   : -1365.634
+
+Type  : Fast 1100mV 85C Model Setup 'adc_spi_controller:adc_inst|clk_div[4]'
+Slack : -1.116
+TNS   : -26.813
+
+Type  : Fast 1100mV 85C Model Hold 'CLOCK_50'
+Slack : 0.180
+TNS   : 0.000
+
+Type  : Fast 1100mV 85C Model Hold 'adc_spi_controller:adc_inst|clk_div[4]'
+Slack : 0.348
+TNS   : 0.000
+
+Type  : Fast 1100mV 85C Model Minimum Pulse Width 'adc_spi_controller:adc_inst|clk_div[4]'
+Slack : -1.702
+TNS   : -22.126
+
+Type  : Fast 1100mV 85C Model Minimum Pulse Width 'CLOCK_50'
+Slack : -0.751
+TNS   : -67.950
+
+Type  : Fast 1100mV 0C Model Setup 'CLOCK_50'
+Slack : -23.741
+TNS   : -1249.508
+
+Type  : Fast 1100mV 0C Model Setup 'adc_spi_controller:adc_inst|clk_div[4]'
+Slack : -1.007
+TNS   : -22.293
+
+Type  : Fast 1100mV 0C Model Hold 'CLOCK_50'
+Slack : 0.171
+TNS   : 0.000
+
+Type  : Fast 1100mV 0C Model Hold 'adc_spi_controller:adc_inst|clk_div[4]'
+Slack : 0.316
+TNS   : 0.000
+
+Type  : Fast 1100mV 0C Model Minimum Pulse Width 'adc_spi_controller:adc_inst|clk_div[4]'
+Slack : -1.702
+TNS   : -22.126
+
+Type  : Fast 1100mV 0C Model Minimum Pulse Width 'CLOCK_50'
+Slack : -0.781
+TNS   : -80.950
+
+------------------------------------------------------------

@@ -1,0 +1,6 @@
+DATE = "15:24:34 August 05, 2026"
+QUARTUS_VERSION = "14.0"
+
+# Revisions
+
+PROJECT_REVISION = "adc_uart_daq"
