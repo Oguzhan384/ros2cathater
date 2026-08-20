@@ -1,0 +1,39 @@
+[0.000000] (-) TimerEvent: {}
+[0.000623] (catheter_slam) JobQueued: {'identifier': 'catheter_slam', 'dependencies': OrderedDict()}
+[0.000723] (catheter_slam) JobStarted: {'identifier': 'catheter_slam'}
+[0.099428] (-) TimerEvent: {}
+[0.200001] (-) TimerEvent: {}
+[0.300519] (-) TimerEvent: {}
+[0.401016] (-) TimerEvent: {}
+[0.501463] (-) TimerEvent: {}
+[0.601988] (-) TimerEvent: {}
+[0.702539] (-) TimerEvent: {}
+[0.803090] (-) TimerEvent: {}
+[0.903631] (-) TimerEvent: {}
+[1.004099] (-) TimerEvent: {}
+[1.104569] (-) TimerEvent: {}
+[1.146584] (catheter_slam) Command: {'cmd': ['/usr/bin/python3', '-W', 'ignore:setup.py install is deprecated', '-W', 'ignore:easy_install command is deprecated', 'setup.py', 'develop', '--editable', '--build-directory', '/root/ros2_ws/build/catheter_slam/build', '--no-deps', 'symlink_data'], 'cwd': '/root/ros2_ws/build/catheter_slam', 'env': {'HOSTNAME': 'oguzhan', 'SHLVL': '1', 'LD_LIBRARY_PATH': '/opt/ros/jazzy/opt/rviz_ogre_vendor/lib:/opt/ros/jazzy/lib/x86_64-linux-gnu:/opt/ros/jazzy/opt/gz_math_vendor/lib:/opt/ros/jazzy/opt/gz_utils_vendor/lib:/opt/ros/jazzy/opt/gz_cmake_vendor/lib:/opt/ros/jazzy/lib', 'HOME': '/root', 'OLDPWD': '/', 'ROS_PYTHON_VERSION': '3', 'ROS_DISTRO': 'jazzy', '_': '/usr/bin/colcon', 'ROS_VERSION': '2', 'TERM': 'xterm', 'PATH': '/opt/ros/jazzy/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin', 'DISPLAY': ':0', 'LANG': 'C.UTF-8', 'AMENT_PREFIX_PATH': '/opt/ros/jazzy', 'ROS_AUTOMATIC_DISCOVERY_RANGE': 'SUBNET', 'PWD': '/root/ros2_ws/build/catheter_slam', 'LC_ALL': 'C.UTF-8', 'PYTHONPATH': '/root/ros2_ws/build/catheter_slam/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/root/ros2_ws/install/catheter_slam/lib/python3.12/site-packages:/opt/ros/jazzy/lib/python3.12/site-packages', 'COLCON': '1', 'CMAKE_PREFIX_PATH': '/opt/ros/jazzy/opt/gz_math_vendor:/opt/ros/jazzy/opt/gz_utils_vendor:/opt/ros/jazzy/opt/gz_cmake_vendor'}, 'shell': False}
+[1.204819] (-) TimerEvent: {}
+[1.305315] (-) TimerEvent: {}
+[1.405756] (-) TimerEvent: {}
+[1.473045] (catheter_slam) StdoutLine: {'line': b'running develop\n'}
+[1.505948] (-) TimerEvent: {}
+[1.606357] (-) TimerEvent: {}
+[1.634173] (catheter_slam) StdoutLine: {'line': b'running egg_info\n'}
+[1.649506] (catheter_slam) StdoutLine: {'line': b'writing catheter_slam.egg-info/PKG-INFO\n'}
+[1.649734] (catheter_slam) StdoutLine: {'line': b'writing dependency_links to catheter_slam.egg-info/dependency_links.txt\n'}
+[1.649885] (catheter_slam) StdoutLine: {'line': b'writing entry points to catheter_slam.egg-info/entry_points.txt\n'}
+[1.650148] (catheter_slam) StdoutLine: {'line': b'writing requirements to catheter_slam.egg-info/requires.txt\n'}
+[1.650311] (catheter_slam) StdoutLine: {'line': b'writing top-level names to catheter_slam.egg-info/top_level.txt\n'}
+[1.681690] (catheter_slam) StdoutLine: {'line': b"reading manifest file 'catheter_slam.egg-info/SOURCES.txt'\n"}
+[1.682367] (catheter_slam) StdoutLine: {'line': b"writing manifest file 'catheter_slam.egg-info/SOURCES.txt'\n"}
+[1.699060] (catheter_slam) StdoutLine: {'line': b'running build_ext\n'}
+[1.699257] (catheter_slam) StdoutLine: {'line': b'Creating /root/ros2_ws/install/catheter_slam/lib/python3.12/site-packages/catheter-slam.egg-link (link to .)\n'}
+[1.699977] (catheter_slam) StdoutLine: {'line': b'Installing catheter_bridge script to /root/ros2_ws/install/catheter_slam/lib/catheter_slam\n'}
+[1.700221] (catheter_slam) StdoutLine: {'line': b'\n'}
+[1.700304] (catheter_slam) StdoutLine: {'line': b'Installed /root/ros2_ws/build/catheter_slam\n'}
+[1.700382] (catheter_slam) StdoutLine: {'line': b'running symlink_data\n'}
+[1.706482] (-) TimerEvent: {}
+[1.734862] (catheter_slam) CommandEnded: {'returncode': 0}
+[1.747657] (catheter_slam) JobEnded: {'identifier': 'catheter_slam', 'rc': 0}
+[1.748564] (-) EventReactorShutdown: {}

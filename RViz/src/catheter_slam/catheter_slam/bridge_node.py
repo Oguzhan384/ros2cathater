@@ -5,13 +5,13 @@ from rclpy.node import Node
 from rclpy.qos import QoSProfile, DurabilityPolicy
 from std_msgs.msg import Header
 from sensor_msgs.msg import LaserScan
-from geometry_msgs.msg import TransformStamped, Twist # Twist eklendi
-from visualization_msgs.msg import Marker, MarkerArray
-from tf2_ros import TransformBroadcaster, StaticTransformBroadcaster
 import serial
 import struct
 import math
 import numpy as np
+from visualization_msgs.msg import Marker, MarkerArray
+from geometry_msgs.msg import TransformStamped
+from tf2_ros import TransformBroadcaster, StaticTransformBroadcaster
 
 class CatheterBridge(Node):
     def __init__(self):
@@ -42,7 +42,6 @@ class CatheterBridge(Node):
         self.prev_enc = None
         self.current_x_vis = 0.0
         self.anlik_konum = 0.0
-        self.manual_jump = 0.0  # Klavyeden gelecek zıplama miktarı
         self.marker_id_counter = 0
         self.leftover_data = b''
         self.vessel_segments = [] 
@@ -51,24 +50,11 @@ class CatheterBridge(Node):
         marker_qos = QoSProfile(depth=10, durability=DurabilityPolicy.TRANSIENT_LOCAL)
         self.marker_pub = self.create_publisher(MarkerArray, '/vessel_markers', marker_qos)
         self.scan_pub = self.create_publisher(LaserScan, 'scan', 10)
-        
-        # Klavye dinleyicisi eklendi (teleop_twist_keyboard'dan gelen mesajlar)
-        self.create_subscription(Twist, '/cmd_vel', self.teleop_callback, 10)
-        
         self.tf_broadcaster = TransformBroadcaster(self)
         self.static_tf_broadcaster = StaticTransformBroadcaster(self)
         
         self._send_static_tf()
         self.create_timer(0.1, self._publish_legend)
-
-    def teleop_callback(self, msg):
-        """ Klavyeden gelen komutları anlık zıplamaya çevirir """
-        if msg.linear.x > 0:   # 'i' tuşu (ileri)
-            self.manual_jump = 20.0 
-            self.get_logger().warn("KLAVYE: İLERİ SIÇRAMA TETİKLENDİ")
-        elif msg.linear.x < 0: # ',' tuşu (geri)
-            self.manual_jump = -20.0
-            self.get_logger().warn("KLAVYE: GERİ SIÇRAMA TETİKLENDİ")
 
     def _get_smooth_color(self, r_val):
         norm = np.clip((r_val - self.r_min) / (self.r_max - self.r_min), 0.0, 1.0)
@@ -81,24 +67,23 @@ class CatheterBridge(Node):
 
     def _create_marker_msg(self, m_id, start_x, end_x, r, alpha, now):
         red, g, b = self._get_smooth_color(r)
-        # SLAM düzeltmelerini görmek için frame_id 'map' yapılması önerilir 
-        # ama senin yapını bozmamak için 'odom' bıraktım.
         m = Marker(header=Header(stamp=now, frame_id='odom'), ns='vessel', id=int(m_id), 
                    type=Marker.CYLINDER, action=Marker.ADD)
         m.pose.position.x = float((start_x + end_x) / 2.0)
         m.pose.orientation.y = m.pose.orientation.w = 0.7071
         m.scale.x = m.scale.y = float(r * 2.0 * self.radius_multiplier)
-        m.scale.z = float(abs(end_x - start_x) * 1.02)
+        m.scale.z = float(abs(end_x - start_x) * 1.02) # Parçalar arası boşluk kalmasın diye %2 pay
         m.color.r, m.color.g, m.color.b, m.color.a = red, g, b, alpha
         return m
 
     def run(self):
-        self.get_logger().info("Sistem Aktif. İleri: 'i', Geri: ',' tuşlarını kullanabilirsiniz.")
+        self.get_logger().info("Sistem Aktif")
         while rclpy.ok():
             waiting = self.ser.in_waiting
             if waiting < 6:
                 rclpy.spin_once(self, timeout_sec=0.001); continue
 
+            now = self.get_clock().now().to_msg()
             data_chunk = self.ser.read(waiting)
             if self.leftover_data: data_chunk = self.leftover_data + data_chunk
             full_packets = (len(data_chunk)//6)*6
@@ -121,24 +106,28 @@ class CatheterBridge(Node):
 
                 #-- SLAM için LaserScan oluşturulması --
                 scan_msg = LaserScan()
-                scan_msg.header.stamp, scan_msg.header.frame_id = now, 'laser'
-                scan_msg.angle_min, scan_msg.angle_max = 0.0, 2.0 * math.pi
-                scan_msg.angle_increment = (2.0 * math.pi) / 36
-                scan_msg.range_min, scan_msg.range_max = 0.001, 10.0
+                scan_msg.header.stamp = now
+                scan_msg.header.frame_id = 'laser'
+
+
+                # Lidar parametreleri
+                scan_msg.angle_min = 0.0
+                scan_msg.angle_max = 2.0 * math.pi
+                scan_msg.angle_increment = (2.0 * math.pi) / 36 # 36 nokta için
+                scan_msg.time_increment = 0.0
+                scan_msg.scan_time = 0.1
+                scan_msg.range_min = 0.001
+                scan_msg.range_max = 10.0 # Damar çapına göre (radius_multiplier ile çarpılıyor)
+
                 scan_msg.ranges = [float(current_r * self.radius_multiplier)] * 36
                 self.scan_pub.publish(scan_msg)
                 
-                # --- HAREKET HESABI ---
                 delta = enc_raw - self.prev_enc
                 self.prev_enc = enc_raw
 
-                # Mevcut Rastgele Gürültü
-                noise = np.random.normal(0, 0.0) 
+                noise = np.random.normal(0, .0) #Slam için encoder noisesi, aralığı arttırarak noiseyi artırabilirsin
 
-                # Yeni Eklenen Manuel Klavye Sıçraması
-                # (Sıçramayı ekledikten sonra hemen sıfırlıyoruz ki her tuş basışı bir kez zıplatsın)
-                delta_noisy = delta + noise + self.manual_jump
-                self.manual_jump = 0.0 
+                delta_noisy = delta + noise
                 
                 # --- KONUM GÜNCELLEME ---
                 self.anlik_konum += delta_noisy * self.P_METRE 
@@ -169,13 +158,11 @@ class CatheterBridge(Node):
                             self.vessel_segments.append(new_seg)
                             loop_markers.markers.append(self._create_marker_msg(new_seg[0], new_seg[1], new_seg[2], new_seg[3], 0.8, now))
 
-                # TF Yayınla
                 t = TransformStamped()
                 t.header.stamp, t.header.frame_id, t.child_frame_id = now, 'odom', 'base_link'
                 t.transform.translation.x = float(self.current_x_vis)
                 t.transform.rotation.w = 1.0
                 self.tf_broadcaster.sendTransform(t)
-                
                 rclpy.spin_once(self, timeout_sec=0)
                 if loop_markers.markers: self.marker_pub.publish(loop_markers)
             
