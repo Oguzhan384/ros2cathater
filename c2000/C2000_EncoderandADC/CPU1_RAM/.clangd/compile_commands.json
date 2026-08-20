@@ -1,0 +1,27 @@
+[
+   {
+      "directory" : "/home/oguzhan/ros2cathater/ros2cathater/c2000/C2000_EncoderandADC/CPU1_RAM",
+      "command"   : "clang++ -I\"/home/oguzhan/ros2cathater/ros2cathater/c2000/C2000_EncoderandADC\" -I\"/home/oguzhan/ros2cathater/ros2cathater/c2000/C2000_EncoderandADC/device\" -I\"/home/oguzhan/ti/C2000Ware_26_01_00_00/driverlib/f2837xd/driverlib\" -I\"/home/oguzhan/ti/ccs2100/ccs/tools/compiler/ti-cgt-c2000_25.11.1.LTS/include\" -D_LAUNCHXL_F28379D -DDEBUG -DCPU1 -I\"/home/oguzhan/ros2cathater/ros2cathater/c2000/C2000_EncoderandADC/CPU1_RAM/syscfg\" -DF2837xD=1 -xc",
+      "file"      : "/home/oguzhan/ros2cathater/ros2cathater/c2000/C2000_EncoderandADC/CPU1_RAM/syscfg/board.c"
+   },
+   {
+      "directory" : "/home/oguzhan/ros2cathater/ros2cathater/c2000/C2000_EncoderandADC/CPU1_RAM",
+      "command"   : "clang++ -I\"/home/oguzhan/ros2cathater/ros2cathater/c2000/C2000_EncoderandADC\" -I\"/home/oguzhan/ros2cathater/ros2cathater/c2000/C2000_EncoderandADC/device\" -I\"/home/oguzhan/ti/C2000Ware_26_01_00_00/driverlib/f2837xd/driverlib\" -I\"/home/oguzhan/ti/ccs2100/ccs/tools/compiler/ti-cgt-c2000_25.11.1.LTS/include\" -D_LAUNCHXL_F28379D -DDEBUG -DCPU1 -I\"/home/oguzhan/ros2cathater/ros2cathater/c2000/C2000_EncoderandADC/CPU1_RAM/syscfg\" -DF2837xD=1 -xc",
+      "file"      : "/home/oguzhan/ros2cathater/ros2cathater/c2000/C2000_EncoderandADC/CPU1_RAM/syscfg/c2000ware_libraries.c"
+   },
+   {
+      "directory" : "/home/oguzhan/ros2cathater/ros2cathater/c2000/C2000_EncoderandADC/CPU1_RAM",
+      "command"   : "clang++ -I\"/home/oguzhan/ros2cathater/ros2cathater/c2000/C2000_EncoderandADC\" -I\"/home/oguzhan/ros2cathater/ros2cathater/c2000/C2000_EncoderandADC/device\" -I\"/home/oguzhan/ti/C2000Ware_26_01_00_00/driverlib/f2837xd/driverlib\" -I\"/home/oguzhan/ti/ccs2100/ccs/tools/compiler/ti-cgt-c2000_25.11.1.LTS/include\" -D_LAUNCHXL_F28379D -DDEBUG -DCPU1 -I\"/home/oguzhan/ros2cathater/ros2cathater/c2000/C2000_EncoderandADC/CPU1_RAM/syscfg\" -DF2837xD=1",
+      "file"      : "/home/oguzhan/ros2cathater/ros2cathater/c2000/C2000_EncoderandADC/device/F2837xD_CodeStartBranch.asm"
+   },
+   {
+      "directory" : "/home/oguzhan/ros2cathater/ros2cathater/c2000/C2000_EncoderandADC/CPU1_RAM",
+      "command"   : "clang++ -I\"/home/oguzhan/ros2cathater/ros2cathater/c2000/C2000_EncoderandADC\" -I\"/home/oguzhan/ros2cathater/ros2cathater/c2000/C2000_EncoderandADC/device\" -I\"/home/oguzhan/ti/C2000Ware_26_01_00_00/driverlib/f2837xd/driverlib\" -I\"/home/oguzhan/ti/ccs2100/ccs/tools/compiler/ti-cgt-c2000_25.11.1.LTS/include\" -D_LAUNCHXL_F28379D -DDEBUG -DCPU1 -I\"/home/oguzhan/ros2cathater/ros2cathater/c2000/C2000_EncoderandADC/CPU1_RAM/syscfg\" -DF2837xD=1 -xc",
+      "file"      : "/home/oguzhan/ros2cathater/ros2cathater/c2000/C2000_EncoderandADC/device/device.c"
+   },
+   {
+      "directory" : "/home/oguzhan/ros2cathater/ros2cathater/c2000/C2000_EncoderandADC/CPU1_RAM",
+      "command"   : "clang++ -I\"/home/oguzhan/ros2cathater/ros2cathater/c2000/C2000_EncoderandADC\" -I\"/home/oguzhan/ros2cathater/ros2cathater/c2000/C2000_EncoderandADC/device\" -I\"/home/oguzhan/ti/C2000Ware_26_01_00_00/driverlib/f2837xd/driverlib\" -I\"/home/oguzhan/ti/ccs2100/ccs/tools/compiler/ti-cgt-c2000_25.11.1.LTS/include\" -D_LAUNCHXL_F28379D -DDEBUG -DCPU1 -I\"/home/oguzhan/ros2cathater/ros2cathater/c2000/C2000_EncoderandADC/CPU1_RAM/syscfg\" -DF2837xD=1 -xc",
+      "file"      : "/home/oguzhan/ros2cathater/ros2cathater/c2000/C2000_EncoderandADC/empty_driverlib_main.c"
+   }
+]

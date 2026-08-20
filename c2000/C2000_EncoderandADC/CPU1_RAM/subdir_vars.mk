@@ -10,7 +10,7 @@ SYSCFG_SRCS += \
 ../c2000.syscfg 
 
 LIB_SRCS += \
-/opt/ti/c2000/C2000Ware_26_01_00_00/driverlib/f2837xd/driverlib/ccs/Debug/driverlib.lib 
+/home/oguzhan/ti/C2000Ware_26_01_00_00/driverlib/f2837xd/driverlib/ccs/Debug/driverlib.lib 
 
 C_SRCS += \
 ./syscfg/board.c \

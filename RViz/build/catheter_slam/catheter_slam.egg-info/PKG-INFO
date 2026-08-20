@@ -1,5 +1,3 @@
-Metadata-Version: 2.4
-Name: catheter_slam
+Metadata-Version: 2.1
+Name: catheter-slam
 Version: 0.0.1
-Requires-Dist: setuptools
-Dynamic: requires-dist

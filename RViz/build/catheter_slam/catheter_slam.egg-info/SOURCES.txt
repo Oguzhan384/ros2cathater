@@ -9,6 +9,7 @@ catheter_slam.egg-info/dependency_links.txt
 catheter_slam.egg-info/entry_points.txt
 catheter_slam.egg-info/requires.txt
 catheter_slam.egg-info/top_level.txt
-config/slam_toolbox.yaml
+config/catheter.rviz
+config/slam.yaml
 launch/catheter_slam.launch.py
 resource/catheter_slam

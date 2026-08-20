@@ -88,7 +88,7 @@ void main(void)
 
         // --- D) Döngü Hızı ve LED ---
         // Veri gönderim hızı (Örn: 20ms'de bir paket)
-        DEVICE_DELAY_US(10000);
+        DEVICE_DELAY_US(100000);
 
         ledSayac++;
         if(ledSayac > 25)
