@@ -1,0 +1,46 @@
+slam:
+  ros__parameters:
+    # --- Çerçeve ve Topic Ayarları ---
+    odom_frame: odom
+    map_frame: map
+    base_frame: base_link
+    scan_topic: /scan
+    mode: mapping
+    use_sim_time: false
+
+    # --- ZAMANLAMA HATASI ÇÖZÜMÜ ---
+    # "Failed to compute odom pose" uyarısını engeller.
+    # Lazer verisi geldiğinde TF'nin gelmesi için 0.2 saniye tolerans tanır.
+    transform_timeout: 0.2
+    transform_publish_period: 0.02
+
+    # --- GERİYE ATMA VE HAREKET TAKİBİ ÇÖZÜMÜ ---
+    # Odometriye (encoder) olan güveni aşırı artırıyoruz.
+    # Lazer "aynı yeri görüyorum" dese bile odometrinin "ilerledik" demesini üstün tutar.
+    distance_variance_penalty: 15.0 
+    angle_variance_penalty: 0.000000000001
+
+    # SLAM'in her milimetrede karar değiştirmesini engeller.
+    # 0.02 (2cm) hareket etmeden haritayı ve konumu güncellemez, titremeyi önler.
+    minimum_travel_distance: 0.02
+    minimum_travel_heading: 0.1
+
+    # --- ARAMA ALANI (KÜÇÜK VE HIZLI) ---
+    # Boru dar olduğu için arama alanını daraltıp doğruluğu artırıyoruz.
+    correlation_search_space_dimension: 0.05 
+    correlation_search_space_resolution: 0.005
+    correlation_search_space_smear_deviation: 0.01
+
+    # Zayıf lazer eşleşmelerini bile kabul et, konumu sıfırlama (geri atma).
+    minimum_score: 0.001
+    link_match_minimum_response_fine: 0.001
+
+    # --- HARİTA VE STABİLİTE ---
+    resolution: 0.005           # 5mm harita çözünürlüğü
+    map_update_interval: 1.0     # Haritayı saniyede bir güncelle (CPU'yu ve algoritmayı rahatlatır)
+    do_loop_closing: false       # Boru içinde asla açılmamalı
+    use_response_expansion: true # Başarısız olursa arama alanını genişlet (Çökmeyi önler)
+    
+    # --- BELLEK YÖNETİMİ ---
+    stack_size_to_use: 40000000 
+    max_laser_range: 20.0

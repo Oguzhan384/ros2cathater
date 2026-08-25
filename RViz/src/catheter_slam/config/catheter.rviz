@@ -7,8 +7,10 @@ Panels:
         - /Global Options1
         - /MarkerArray1/Topic1
         - /LaserScan1
+        - /LaserScan1/Topic1
+        - /TF1/Frames1
       Splitter Ratio: 0.5
-    Tree Height: 500
+    Tree Height: 445
   - Class: rviz_common/Views
     Expanded:
       - /Current View1
@@ -23,11 +25,11 @@ Visualization Manager:
       Class: rviz_default_plugins/Map
       Color Scheme: map
       Draw Behind: false
-      Enabled: false
+      Enabled: true
       Name: Map
       Topic:
         Depth: 5
-        Durability Policy: Volatile
+        Durability Policy: Transient Local
         Filter size: 10
         History Policy: Keep Last
         Reliability Policy: Reliable
@@ -39,14 +41,14 @@ Visualization Manager:
         Reliability Policy: Reliable
         Value: /map_updates
       Use Timestamp: false
-      Value: false
+      Value: true
     - Class: rviz_default_plugins/MarkerArray
       Enabled: true
       Name: MarkerArray
       Namespaces:
-        distance_ui: true
-        l_c: true
-        l_t: true
+        legend: true
+        ui_stats: true
+        vessel: true
       Topic:
         Depth: 5
         Durability Policy: Volatile
@@ -65,7 +67,7 @@ Visualization Manager:
       Class: rviz_default_plugins/LaserScan
       Color: 255; 0; 0
       Color Transformer: FlatColor
-      Decay Time: 100
+      Decay Time: 20
       Enabled: true
       Invert Rainbow: false
       Max Color: 255; 255; 255
@@ -77,13 +79,13 @@ Visualization Manager:
       Selectable: true
       Size (Pixels): 3
       Size (m): 0.004999999888241291
-      Style: Spheres
+      Style: Boxes
       Topic:
-        Depth: 5
+        Depth: 50
         Durability Policy: Volatile
         Filter size: 10
         History Policy: Keep Last
-        Reliability Policy: Reliable
+        Reliability Policy: Best Effort
         Value: /scan
       Use Fixed Frame: true
       Use rainbow: true
@@ -94,23 +96,26 @@ Visualization Manager:
       Filter (whitelist): ""
       Frame Timeout: 15
       Frames:
-        All Enabled: true
+        All Enabled: false
         base_link:
           Value: true
         laser:
+          Value: false
+        map:
           Value: true
         odom:
-          Value: true
+          Value: false
       Marker Scale: 0.30000001192092896
       Name: TF
       Show Arrows: true
       Show Axes: true
       Show Names: true
       Tree:
-        odom:
-          base_link:
-            laser:
-              {}
+        map:
+          odom:
+            base_link:
+              laser:
+                {}
       Update Interval: 0
       Value: true
     - Alpha: 0.5
@@ -134,8 +139,8 @@ Visualization Manager:
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
-    Fixed Frame: odom
-    Frame Rate: 30
+    Fixed Frame: map
+    Frame Rate: 60
   Name: root
   Tools:
     - Class: rviz_default_plugins/Interact
@@ -177,35 +182,35 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 1.8440790176391602
+      Distance: 9.056122779846191
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 0.16921789944171906
-        Y: -0.7090237736701965
-        Z: 0.24127508699893951
+        X: -0.34843313694000244
+        Y: -0.23088328540325165
+        Z: -0.6032192707061768
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.36000028252601624
+      Pitch: 0.29500052332878113
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 4.601812362670898
+      Yaw: 1.6836297512054443
     Saved: ~
 Window Geometry:
   Displays:
     collapsed: false
-  Height: 1011
+  Height: 920
   Hide Left Dock: false
   Hide Right Dock: false
-  QMainWindow State: 000000ff00000000fd00000001000000000000019b0000039dfc0200000002fb000000100044006900730070006c006100790073010000003b0000022f000000c700fffffffb0000000a00560069006500770073010000027000000168000000a000ffffff000005990000039d00000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  QMainWindow State: 000000ff00000000fd00000001000000000000019b00000342fc0200000002fb000000100044006900730070006c006100790073010000003b000001f8000000c700fffffffb0000000a00560069006500770073010000023900000144000000a000ffffff0000035d0000034200000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   Views:
     collapsed: false
-  Width: 1850
-  X: 70
-  Y: 32
+  Width: 1278
+  X: 621
+  Y: 62
