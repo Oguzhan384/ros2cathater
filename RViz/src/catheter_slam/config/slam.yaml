@@ -1,46 +1,63 @@
 slam:
   ros__parameters:
-    # --- Çerçeve ve Topic Ayarları ---
-    odom_frame: odom
-    map_frame: map
-    base_frame: base_link
-    scan_topic: /scan
-    mode: mapping
-    use_sim_time: false
+    # --- Genel Slam Ayarları ---
+    odom_frame: odom                        # Mesafe verisinin kaynağı (Encoder odom)
+    map_frame: map                          # Haritanın sabitlendiği dünya çerçevesi
+    base_frame: base_link                   # Kateterin fiziksel merkez çerçevesi
+    scan_topic: /scan                       # Lidar (yarıçap) verisinin topic adı
+    mode: mapping                           # Mod: mapping (haritalama) / localization
+    use_sim_time: false                     # Gerçek donanım için her zaman false
+    debug_logging: false                    # Terminale detaylı log basımını kapatır
+    throttle_scans: 1                       # Gelen verileri seyreltmez, hepsini işler
+    transform_publish_period: 0.02          # map->odom yayın frekansı (50Hz)
+    map_update_interval: 1.0                # RViz harita yenileme hızı (saniye)
+    resolution: 0.005                       # Harita hassasiyeti (0.01 = 1cm)
+    max_laser_range: 3.0                    # Tüp dışı yansımaları engellemek için kısa
+    min_laser_range: 0.01                   # Cihazın kendi gövdesini görmezden gelir
+    minimum_time_interval: 0.02             # İki tarama arasındaki min. süre
+    transform_timeout: 0.2                  # TF dönüşüm bekleme zaman aşımı
+    tf_buffer_duration: 30.0                # TF geçmişinin bellekte tutulma süresi
+    stack_size_to_use: 40000000             # İşlem için ayrılan yüksek bellek miktarı
 
-    # --- ZAMANLAMA HATASI ÇÖZÜMÜ ---
-    # "Failed to compute odom pose" uyarısını engeller.
-    # Lazer verisi geldiğinde TF'nin gelmesi için 0.2 saniye tolerans tanır.
-    transform_timeout: 0.2
-    transform_publish_period: 0.02
-
-    # --- GERİYE ATMA VE HAREKET TAKİBİ ÇÖZÜMÜ ---
-    # Odometriye (encoder) olan güveni aşırı artırıyoruz.
-    # Lazer "aynı yeri görüyorum" dese bile odometrinin "ilerledik" demesini üstün tutar.
-    distance_variance_penalty: 15.0 
-    angle_variance_penalty: 0.000000000001
-
-    # SLAM'in her milimetrede karar değiştirmesini engeller.
-    # 0.02 (2cm) hareket etmeden haritayı ve konumu güncellemez, titremeyi önler.
-    minimum_travel_distance: 0.02
-    minimum_travel_heading: 0.1
-
-    # --- ARAMA ALANI (KÜÇÜK VE HIZLI) ---
-    # Boru dar olduğu için arama alanını daraltıp doğruluğu artırıyoruz.
-    correlation_search_space_dimension: 0.05 
-    correlation_search_space_resolution: 0.005
-    correlation_search_space_smear_deviation: 0.01
-
-    # Zayıf lazer eşleşmelerini bile kabul et, konumu sıfırlama (geri atma).
-    minimum_score: 0.001
-    link_match_minimum_response_fine: 0.001
-
-    # --- HARİTA VE STABİLİTE ---
-    resolution: 0.005           # 5mm harita çözünürlüğü
-    map_update_interval: 1.0     # Haritayı saniyede bir güncelle (CPU'yu ve algoritmayı rahatlatır)
-    do_loop_closing: false       # Boru içinde asla açılmamalı
-    use_response_expansion: true # Başarısız olursa arama alanını genişlet (Çökmeyi önler)
+    # --- Tarama Eşleştirme (Scan Matcher) ---
+    use_scan_matching: true                 # Lazerle konum düzeltmeyi aktif eder
+    use_scan_barycenter: true               # Lazerin ağırlık merkezini baz alır
+    minimum_travel_distance: 0.002          # cm gitmeden yeni harita düğümü eklemez
+    minimum_travel_heading: 999.9           # Dönüş hassasiyeti (Radyan)
+    scan_buffer_size: 20                    # Bellekte tutulan eski tarama sayısı
+    scan_buffer_maximum_scan_distance: 0.1  # Taramalar arası maks. 10cm sıçramaya izin verir
+    link_match_minimum_response_fine: 0.3   # Eşleşme skoru barajı (Altındakini reddeder)
+    link_scan_maximum_distance: 0.5         # Bağlanacak taramalar arası maks. mesafe
     
-    # --- BELLEK YÖNETİMİ ---
-    stack_size_to_use: 40000000 
-    max_laser_range: 20.0
+    # --- Odometri ve Lazer Cezaları (Penalty) ---
+    distance_variance_penalty: 0.01         # Değer azaldıkça Odometreye olan güven artar
+    angle_variance_penalty: 1e-9            # Değer azaldıkça Odometre açısına sadakat artar (Dönüşü yasaklar)
+    use_response_expansion: true            # Eşleşme bulamazsa arama alanını genişletme (Yanlış yere atlamayı engeller)
+    fine_search_angle_offset: 0.0000000001           # Hareket ederken bakacağı açı
+    coarse_search_angle_offset: 0.0000000001         # Kaba aramada bakacağı açı
+
+    # --- Korelasyon (Arama Alanı) ---
+    correlation_search_space_dimension: 0.2 # Sadece cm'lik dar alanda eşleşme arar
+    correlation_search_space_resolution: 0.001 # Arama yaparken 5mm adımlarla çok hassas bakar
+    correlation_search_space_smear_deviation: 0.01 # Olasılıkların bulanıklaşma/yayılma miktarı
+
+    # --- Döngü Kapatma (Loop Closure) ---
+    do_loop_closing: false                  # Geri gelince eski haritayı tanıma özelliği
+    loop_search_maximum_distance: 0.05      # En fazla metre geride döngü arar
+    loop_match_minimum_chain_size: 5        # Döngü için en az 15 tarama uyuşmalıdır
+    loop_match_maximum_variance_coarse: 3.0 # Kaba eşleşme hata toleransı
+    loop_match_minimum_response_coarse: 0.45 # Kaba eşleşme kabul skoru
+    loop_match_minimum_response_fine: 0.65  # Hassas eşleşme barajı (Tüp için yüksek tutuldu)
+    loop_search_space_dimension: 4.0        # Döngü aranacak bölge genişliği
+    loop_search_space_resolution: 0.002     # Döngü arama hassasiyeti
+    loop_search_space_smear_deviation: 0.01 # Döngü arama olasılık yayılımı
+
+    # --- Lifelong (Sürekli) Haritalama ---
+    lifelong_minimum_score: 0.05            # Yeni veri için gereken min. kalite
+    lifelong_iou_match: 0.85                # Mevcut ve yeni veri örtüşme oranı
+    lifelong_node_removal_score: 0.04       # Kötü verileri haritadan silme eşiği
+    lifelong_overlap_score: 0.8             # Çakışan bölgelerin benzerlik skoru
+    lifelong_graph_fitness_score: 0.05      # Genel harita grafiği uygunluk puanı
+
+    # --- İnteraktif Mod ---
+    enable_interactive_mode: false          # Manuel el ile düzeltme modunu kapatır
