@@ -10,47 +10,47 @@ slam:
     debug_logging: false                    # Terminale detaylı log basımını kapatır
     throttle_scans: 1                       # Gelen verileri seyreltmez, hepsini işler
     transform_publish_period: 0.02          # map->odom yayın frekansı (50Hz)
-    map_update_interval: 1.0                # RViz harita yenileme hızı (saniye)
-    resolution: 0.005                       # Harita hassasiyeti (0.01 = 1cm)
-    max_laser_range: 3.0                    # Tüp dışı yansımaları engellemek için kısa
-    min_laser_range: 0.01                   # Cihazın kendi gövdesini görmezden gelir
+    map_update_interval: 2.0                # RViz harita yenileme hızı (saniye)
+    resolution: 0.05                       # Harita hassasiyeti (0.01 = 1cm)
+    max_laser_range: 5.0                    # Tüp dışı yansımaları engellemek için kısa
+    min_laser_range: 0.0                   # Cihazın kendi gövdesini görmezden gelir
     minimum_time_interval: 0.02             # İki tarama arasındaki min. süre
     transform_timeout: 0.2                  # TF dönüşüm bekleme zaman aşımı
-    tf_buffer_duration: 30.0                # TF geçmişinin bellekte tutulma süresi
-    stack_size_to_use: 40000000             # İşlem için ayrılan yüksek bellek miktarı
+    tf_buffer_duration: 5.0                # TF geçmişinin bellekte tutulma süresi
+    stack_size_to_use: 4000000             # İşlem için ayrılan yüksek bellek miktarı
 
     # --- Tarama Eşleştirme (Scan Matcher) ---
     use_scan_matching: true                 # Lazerle konum düzeltmeyi aktif eder
     use_scan_barycenter: true               # Lazerin ağırlık merkezini baz alır
-    minimum_travel_distance: 0.002          # cm gitmeden yeni harita düğümü eklemez
-    minimum_travel_heading: 999.9           # Dönüş hassasiyeti (Radyan)
-    scan_buffer_size: 20                    # Bellekte tutulan eski tarama sayısı
+    minimum_travel_distance: 0.1          # cm gitmeden yeni harita düğümü eklemez
+    minimum_travel_heading: 0.05            # Dönüş hassasiyeti (Radyan)
+    scan_buffer_size: 10                    # Bellekte tutulan eski tarama sayısı
     scan_buffer_maximum_scan_distance: 0.1  # Taramalar arası maks. 10cm sıçramaya izin verir
-    link_match_minimum_response_fine: 0.3   # Eşleşme skoru barajı (Altındakini reddeder)
+    link_match_minimum_response_fine: 0.1   # Eşleşme skoru barajı (Altındakini reddeder)
     link_scan_maximum_distance: 0.5         # Bağlanacak taramalar arası maks. mesafe
     
     # --- Odometri ve Lazer Cezaları (Penalty) ---
-    distance_variance_penalty: 0.01         # Değer azaldıkça Odometreye olan güven artar
+    distance_variance_penalty: 0.5         # Değer azaldıkça Odometreye olan güven artar
     angle_variance_penalty: 1e-9            # Değer azaldıkça Odometre açısına sadakat artar (Dönüşü yasaklar)
-    use_response_expansion: true            # Eşleşme bulamazsa arama alanını genişletme (Yanlış yere atlamayı engeller)
-    fine_search_angle_offset: 0.0000000001           # Hareket ederken bakacağı açı
-    coarse_search_angle_offset: 0.0000000001         # Kaba aramada bakacağı açı
+    use_response_expansion: false            # Eşleşme bulamazsa arama alanını genişletme (Yanlış yere atlamayı engeller)
+    fine_search_angle_offset: 1e-7          # Hareket ederken bakacağı açı
+    coarse_search_angle_offset: 1e-8         # Kaba aramada bakacağı açı
 
     # --- Korelasyon (Arama Alanı) ---
-    correlation_search_space_dimension: 0.2 # Sadece cm'lik dar alanda eşleşme arar
-    correlation_search_space_resolution: 0.001 # Arama yaparken 5mm adımlarla çok hassas bakar
+    correlation_search_space_dimension: 0.5 # Sadece cm'lik dar alanda eşleşme arar
+    correlation_search_space_resolution: 0.005 # Arama yaparken 5mm adımlarla çok hassas bakar
     correlation_search_space_smear_deviation: 0.01 # Olasılıkların bulanıklaşma/yayılma miktarı
 
     # --- Döngü Kapatma (Loop Closure) ---
     do_loop_closing: false                  # Geri gelince eski haritayı tanıma özelliği
-    loop_search_maximum_distance: 0.05      # En fazla metre geride döngü arar
+    loop_search_maximum_distance: 0.5      # En fazla metre geride döngü arar
     loop_match_minimum_chain_size: 5        # Döngü için en az 15 tarama uyuşmalıdır
     loop_match_maximum_variance_coarse: 3.0 # Kaba eşleşme hata toleransı
     loop_match_minimum_response_coarse: 0.45 # Kaba eşleşme kabul skoru
     loop_match_minimum_response_fine: 0.65  # Hassas eşleşme barajı (Tüp için yüksek tutuldu)
     loop_search_space_dimension: 4.0        # Döngü aranacak bölge genişliği
-    loop_search_space_resolution: 0.002     # Döngü arama hassasiyeti
-    loop_search_space_smear_deviation: 0.01 # Döngü arama olasılık yayılımı
+    loop_search_space_resolution: 0.5     # Döngü arama hassasiyeti
+    loop_search_space_smear_deviation: 0.25 # Döngü arama olasılık yayılımı
 
     # --- Lifelong (Sürekli) Haritalama ---
     lifelong_minimum_score: 0.05            # Yeni veri için gereken min. kalite

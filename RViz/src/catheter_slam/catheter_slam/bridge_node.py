@@ -31,13 +31,17 @@ class CatheterBridge(Node):
             self.get_logger().error(f"Port hatasi: {e}"); raise e
 
         # --- PARAMETRELER (Metre cinsinden)---
-        self.v_min, self.v_max = 1.4, 2.05
-        self.r_min, self.r_max = 0.01, 0.017
-        
-        # Hareket mesafesini 25 kat büyüten çarpan
-        self.visual_x_scale = 25.0 
-        # RViz'de nesnelerin devasa görünmesi için çarpan
-        self.radius_multiplier = 20.0 
+        self.v_min, self.v_max = 1.7, 2.20
+        self.r_min, self.r_max = 0.015, 0.025
+
+        #(Slame işlem kolaylığı için bu çarpanları büyük tutun)
+        # Hareket mesafesini büyüten çarpan
+        self.slam_scale = 100.0 
+
+        # Rvizde görsel çarpanı
+        self.visual_scale = 25.0 
+
+        self.draw_ratio = self.visual_scale / self.slam_scale
         
         self.colors = [(1,0,0),(1,0.4,0),(1,1,0),(0.5,1,0),(0,1,0),(0,1,0.5),(0,1,1),(0,0.5,1),(0,0,1),(0.4,0,1),(0.7,0,1),(1,0,1),(1,0,0.5),(0.6,0.6,0.6),(1,1,1)]
         
@@ -46,11 +50,11 @@ class CatheterBridge(Node):
         self.P_METRE = (2 * math.pi * WHEEL_RADIUS_M) / PPR
 
         # --- KONTROL BAYRAKLARI ---
-        self.noise_enabled = True
+        self.noise_enabled = False
 
         # --- GÜRÜLTÜ ZAMANLAMASI ---
-        self.noise_cycle_period = 2.0  # Toplam döngü süresi (saniye)
-        self.noise_on_duration = 1.0   # Gürültünün açık kalacağı süre (saniye)
+        self.noise_cycle_period = 5.0  # Toplam döngü süresi (saniye)
+        self.noise_on_duration = 0.5   # Gürültünün açık kalacağı süre (saniye)
         # --- FİLTRE PARAMETRELERİ ---
         self.v_filtered = None
         self.v_alpha = 0.15 
@@ -136,7 +140,7 @@ class CatheterBridge(Node):
                     if self.noise_enabled and is_noise_time:
                         current_noise = abs(np.random.normal(0, 0.2))
 
-                    self.odom_x += (delta + current_noise) * self.P_METRE * self.visual_x_scale
+                    self.odom_x += (delta + current_noise) * self.P_METRE * self.slam_scale
                     
                     self.prev_enc = enc_raw
 
@@ -162,16 +166,16 @@ class CatheterBridge(Node):
                     # 2. Scan Yayınla (Senkron)
                     if (now_ros - self.last_scan_publish_time).nanoseconds / 1e9 > 0.05: 
                         scan_msg = LaserScan()
-                        scan_msg.header.stamp = now_msg 
+                        scan_msg.header.stamp = self.get_clock().now().to_msg() 
                         scan_msg.header.frame_id = 'laser'
                         scan_msg.angle_min, scan_msg.angle_max = 0.0, 2.0 * math.pi
                         num_pts = 360
                         scan_msg.angle_increment = (2.0 * math.pi) / num_pts
                         scan_msg.range_min, scan_msg.range_max = 0.001, 100.0
-                        
-                        r_vis = float(current_r * self.radius_multiplier)
-                        # SLAM kilitlenmesin diye çok küçük milimetrik gürültü ekle
-                        scan_msg.ranges = [r_vis + np.random.uniform(-0.001, 0.001) for _ in range(num_pts)]
+
+                        #Slam verisini büyüt
+                        r_slam = float(current_r * self.slam_scale)
+                        scan_msg.ranges = [float(r_slam + np.random.uniform(-0.01, 0.01)) for _ in range(num_pts)]
                         
                         self.scan_pub.publish(scan_msg)
                         self.last_scan_publish_time = now_ros
@@ -179,9 +183,10 @@ class CatheterBridge(Node):
                     # 3. SLAM Feedback
                     try:
                         trans = self.tf_buffer.lookup_transform('map', 'base_link', rclpy.time.Time())
-                        self.current_lx = trans.transform.translation.x
+                        slam_x = trans.transform.translation.x
+                        self.current_lx = slam_x * self.draw_ratio
                     except:
-                        self.current_lx = self.odom_x
+                        self.current_lx = self.odom_x * self.draw_ratio
 
                     # Marker Güncelleme
                     for seg in self.vessel_segments:
@@ -213,8 +218,8 @@ class CatheterBridge(Node):
         m.type, m.action = Marker.CYLINDER, Marker.ADD
         m.pose.position.x = float((start_x + end_x) / 2.0)
         m.pose.orientation.y = m.pose.orientation.w = 0.7071
-        m.scale.x = m.scale.y = float(r * 2.0 * self.radius_multiplier)
-        m.scale.z = float(abs(end_x - start_x) * 1.05)
+        m.scale.x = m.scale.y = float(r * 2.0 * self.visual_scale)
+        m.scale.z = float(abs(end_x - start_x))
         m.color.r, m.color.g, m.color.b, m.color.a = red, g, b, alpha
         return m
 
@@ -285,7 +290,11 @@ class CatheterBridge(Node):
     def _send_static_tf(self):
         t = TransformStamped(); t.header.stamp = self.get_clock().now().to_msg()
         t.header.frame_id, t.child_frame_id = 'base_link', 'laser'
-        t.transform.rotation.y = t.transform.rotation.w = 0.7071
+
+        t.transform.rotation.x = 0.0
+        t.transform.rotation.y = 0.7071
+        t.transform.rotation.z = 0.0
+        t.transform.rotation.w = 0.7071
         self.static_tf_broadcaster.sendTransform(t)
 
 def main():
