@@ -31,21 +31,28 @@ class CatheterBridge(Node):
         # --- PARAMETRELER (Metre cinsinden) ---
         self.v_min, self.v_max = 1.55, 2.1
         self.r_min, self.r_max = 0.01, 0.017
-        
+
+        #Rviz görsel boyutlandırması (Slam de burdaki veri oranında büyüyor bunu değiştirirseniz slam.yaml'ı da değiştirmeniz gerekebilir [Slame daha büyük veriler vermek işe yaramıyor])
         self.visual_x_scale = 25.0 
         self.radius_multiplier = 25.0 
+
+        #Marker renklendirmesi
         self.colors = [(1,0,0),(1,0.4,0),(1,1,0),(0.5,1,0),(0,1,0),(0,1,0.5),(0,1,1),(0,0.5,1),(0,0,1),(0.4,0,1),(0.7,0,1),(1,0,1),(1,0,0.5),(0.6,0.6,0.6),(1,1,1)]
-        
+
+        #Encoder fiziksel değerleri
         WHEEL_RADIUS_M = 0.015
         PPR = 800.0
         self.P_METRE = (2 * math.pi * WHEEL_RADIUS_M) / PPR
 
+        #Noise ayarları
         self.noise_enabled = False
         self.noise_cycle_period = 5.0 
         self.noise_on_duration = 1.0   
 
+        #Voltaj gürültü filtresi
         self.v_filtered = None
         self.v_alpha = 0.15 
+
 
         self.is_tty = sys.stdin.isatty()
         if self.is_tty:
@@ -72,11 +79,13 @@ class CatheterBridge(Node):
         
         self.marker_pub = self.create_publisher(MarkerArray, '/vessel_markers', marker_qos)
         self.scan_pub = self.create_publisher(LaserScan, 'scan', scan_qos)
-        
+
+        #Statik yayın sıklığını değiştirmeyin işlemciye çok yük oluyor
         self.create_timer(2.0, self._publish_legend_static)
         self.create_timer(0.1, self._publish_legend_dynamic)
         self.create_timer(0.4, self._republish_all_markers)
 
+    #--- Ana kod loopu ---
     def run(self):
         while rclpy.ok():
             try:
@@ -86,7 +95,8 @@ class CatheterBridge(Node):
                     continue
 
                 data = self.ser.read((waiting // 6) * 6)
-                
+
+                #Zaman tanımlamaları
                 now_ros = self.get_clock().now()
                 now_msg = now_ros.to_msg()
                 now_sec = now_ros.nanoseconds / 1e9
@@ -95,6 +105,7 @@ class CatheterBridge(Node):
 
                 current_r = self.r_min
 
+                #Veri okuma
                 for adc_raw, enc_raw in struct.iter_unpack('>Hi', data):
                     if self.prev_enc is None:
                         self.prev_enc = enc_raw
@@ -118,34 +129,37 @@ class CatheterBridge(Node):
                     norm = (v_clipped - self.v_min) / (self.v_max - self.v_min)
                     current_r = self.r_max - norm * (self.r_max - self.r_min)
 
-                # --- TF Yayınla (odom -> base_link) ---
+                # Slam için TF yayınla (odom -> base_link)
                 t = TransformStamped()
                 t.header.stamp = now_msg
                 t.header.frame_id = 'odom'
                 t.child_frame_id = 'base_link'
                 t.transform.translation.x = float(self.odom_x)
+                #Slamin y ekseninde drift yapmasının önüne geçebilmek için 0 a eşitlemeyi denedim (Çalıştı galiba)
                 t.transform.translation.y = 0.0
                 t.transform.translation.z = 0.0
 
+                #Slamin açisal drifti için 0 a eşitlemeyi denedim (Daha düzgün çalışıyor gibi)
                 t.transform.rotation.x = 0.0
                 t.transform.rotation.y = 0.0
                 t.transform.rotation.z = 0.0
                 t.transform.rotation.w = 1.0
                 self.tf_broadcaster.sendTransform(t)
 
-                # --- SLAM Feedback (Gerçek konumu al) ---
+                # SLAM feedback (Gerçek konumu al)
+                #Marker Array çizdirmesi ve odometri konumu tamamen slame bağlı
                 try:
                     trans = self.tf_buffer.lookup_transform('map', 'base_link', rclpy.time.Time())
                     self.current_lx = trans.transform.translation.x
                 except Exception:
                     self.current_lx = self.odom_x
 
-                # --- SLAM Marker Kaydı ---
+                # SLAM Marker Kaydı
                 if abs(self.current_lx - self.last_recorded_odom_x) > 0.001:
                     self.vessel_segments.append((self.current_lx, current_r))
                     self.last_recorded_odom_x = self.current_lx
 
-                # --- Scan Yayınla ---
+                # Scan Yayınla
                 if (now_ros - self.last_scan_publish_time).nanoseconds / 1e9 > 0.05: 
                     self._publish_scan(now_msg, current_r)
                     self.last_scan_publish_time = now_ros
@@ -154,6 +168,10 @@ class CatheterBridge(Node):
             except Exception:
                 pass
 
+
+    #--- Yardımcı Metodlar ---
+
+    #Slam için scan verisi
     def _publish_scan(self, now_msg, r):
         scan_msg = LaserScan()
         scan_msg.header.stamp = now_msg 
@@ -166,11 +184,8 @@ class CatheterBridge(Node):
         scaled_r = float(r * self.radius_multiplier)
         ranges = [float('inf')] * num_pts # Önce her yeri boş yap
 
-        # SADECE YAN DUVARLAR (90 ve 270 derece civarı)
-        # Bu pencereler SLAM'in Y ekseninde kaymasını engeller (Ray etkisi)
-        # Ama X ekseninde (ileri-geri) haritayı eşleştirmesine izin verir
+        #360 derece scan oluşturmayın slamin hareketinin önüne duvar çiziyor (yz ya da xy düzlami üzerinde olması fark etmiyor)
         for i in range(num_pts):
-            # 70-110 derece (Sol yan) ve 250-290 derece (Sağ yan)
             if (70 <= i <= 110) or (250 <= i <= 290):
                 ranges[i] = scaled_r + np.random.uniform(-0.0005, 0.0005)
                 
@@ -186,6 +201,7 @@ class CatheterBridge(Node):
         c1, c2 = self.colors[idx1], self.colors[idx2]
         return (float(c1[0]*(1-w)+c2[0]*w), float(c1[1]*(1-w)+c2[1]*w), float(c1[2]*(1-w)+c2[2]*w))
 
+    #Yeni marker oluşturma
     def _create_marker_msg(self, m_id, start_x, end_x, r, alpha, now):
         red, g, b = self._get_smooth_color(r)
         m = Marker()
@@ -199,6 +215,7 @@ class CatheterBridge(Node):
         m.color.r, m.color.g, m.color.b, m.color.a = red, g, b, alpha
         return m
 
+    #Markerleri tek sefer yayınladığımda bazenleri ghost markerler oluşuyor (Çizmiyor ya da şeffaflaştırmıyor) bu yüzden sürekli tekrardan yayınlıyorum hiç performans sıkıntısını görmedim
     def _republish_all_markers(self):
         if len(self.vessel_segments) < 2: return
         ma = MarkerArray()
@@ -210,6 +227,7 @@ class CatheterBridge(Node):
             ma.markers.append(self._create_marker_msg(i, p1_map, p2_map, r2, 0.15 if is_past else 0.8, now))
         self.marker_pub.publish(ma)
 
+    #Renk kutuları ve ona karşılık gelen yarıçaplar (Yüksek işlem gücü istiyor)
     def _publish_legend_static(self):
         ma = MarkerArray()
         now = self.get_clock().now().to_msg()
@@ -235,6 +253,7 @@ class CatheterBridge(Node):
             ma.markers.append(m_t)
         self.marker_pub.publish(ma)
 
+    #Mesafe ölçümleri
     def _publish_legend_dynamic(self):
         ma = MarkerArray()
         now = self.get_clock().now().to_msg()
